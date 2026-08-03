@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>كل عام وأنت بخير! 🎉</title>
+  <title>بطاقة تهنئة عيد ميلاد 🎂</title>
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
@@ -17,22 +17,31 @@
     }
     .card {
       background: #ffffff;
-      padding: 30px 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      padding: 35px 25px;
+      border-radius: 24px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
       text-align: center;
       width: 100%;
       max-width: 380px;
+      border: 3px solid #ff6b81;
+    }
+    .icon {
+      font-size: 50px;
+      margin-bottom: 10px;
     }
     h2 {
       color: #ff4757;
       margin-bottom: 10px;
+      font-size: 24px;
     }
     .greeting-text {
       font-size: 15px;
       color: #555;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       line-height: 1.6;
+      background: #fff0f3;
+      padding: 12px;
+      border-radius: 12px;
     }
     input[type="text"] {
       width: 100%;
@@ -56,6 +65,10 @@
       cursor: pointer;
       font-size: 15px;
       font-weight: bold;
+      transition: 0.2s;
+    }
+    .btn-geo:hover {
+      background-color: #ff4757;
     }
     .btn-submit {
       width: 100%;
@@ -67,6 +80,10 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: #26af5f;
     }
     #status {
       font-size: 13px;
@@ -79,10 +96,13 @@
 <body>
 
   <div class="card">
-    <h2>🎂 عيد ميلاد سعيد! 🎈</h2>
-    <p class="greeting-text">أهلاً بك! اكتب اسمك وشاركنا فرحتك لنحتفل معاً!</p>
+    <div class="icon">🎉</div>
+    <h2>كل عام وأنت بخير!</h2>
+    <p class="greeting-text">
+      أجمل التهاني وأطيب الأماني بمناسبة عيد ميلادك السعيد! 🎈<br>
+      اكتب اسمك وشاركنا فرحتك لتبدأ الاحتفال معنا.
+    </p>
     
-    <!-- تم إزالة action و method لمنع أي توجيه خاطئ -->
     <form id="birthdayForm">
       <input type="text" id="nameInput" name="name" placeholder="أدخل اسمك الكريم هنا" required>
 
@@ -114,7 +134,7 @@
             status.style.color = "#2ed573";
           },
           (error) => {
-            status.innerText = "تم تخطي الخطوة أو تعذر الاستمرار بالخدمة .";
+            status.innerText = "تم تخطي الخطوة أو تعذر تحديد الموقع.";
             status.style.color = "#ff4757";
           }
         );
