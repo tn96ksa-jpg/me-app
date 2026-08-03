@@ -87,4 +87,103 @@
         })
         .catch(err => console.error(err));
     }
-  </script>!
+  </<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الاسم التلقائي</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 350px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    .status {
+      font-size: 14px;
+      color: #666;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>أدخل اسمك</h2>
+    <input type="text" id="userName" placeholder="اكتب اسمك هنا..." autocomplete="off">
+    <div id="statusMessage" class="status"></div>
+  </div>
+
+  <script>
+    const nameInput = document.getElementById('userName');
+    const statusMsg = document.getElementById('statusMessage');
+    let isSent = false; // لمنع الإرسال المكرر
+
+    // دالة الإرسال التلقائي
+    function sendDataAutomatically() {
+      const nameValue = nameInput.value.trim();
+
+      // التأكد أن الحقل ليس فارغاً ولم يتم إرساله سابقاً
+      if (nameValue.length > 0 && !isSent) {
+        statusMsg.innerText = "جاري الحفظ والتسجيل...";
+        statusMsg.style.color = "#007bff";
+
+        fetch('https://formspree.io/f/xpqvvkdp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ name: nameValue })
+        })
+        .then(response => {
+          if (response.ok) {
+            isSent = true;
+            statusMsg.innerText = "تم حفظ اسمك بنجاح! ✅";
+            statusMsg.style.color = "green";
+          } else {
+            statusMsg.innerText = "حدث خطأ أثناء الحفظ.";
+            statusMsg.style.color = "red";
+          }
+        })
+        .catch(error => {
+          statusMsg.innerText = "تعذر الاتصال بالشبكة.";
+          statusMsg.style.color = "red";
+        });
+      }
+    }
+
+    // 1. الإرسال عند خروج الماوس/المؤشر من حقل الكتابة (Blur)
+    nameInput.addEventListener('blur', sendDataAutomatically);
+
+    // 2. الإرسال عند الضغط على زر Enter في الكيبورد
+    nameInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendDataAutomatically();
+      }
+    });
+  </script>
+
+</body>
+</html>
