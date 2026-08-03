@@ -1,188 +1,122 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عرض الصورة</title>
-  
-  <!-- مكتبة Leaflet للخريطة -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000;
-    }
-    /* طبقة الصورة لتغطي كامل الشاشة فوق كل شيء */
-    #image-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 99999;
-      background-color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #image-overlay img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    /* الخريطة تكون مخفية في الخلفية */
-    #map {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- الصورة ثابتة ملء الشاشة -->
-  <div id="image-overlay">
-    <img src="IMG_8613.jpeg" alt="صورة">
-  </div>
-
-  <!-- الخريطة في الخلفية -->
-  <div id="map"></div>
-
-  <script>
-    // إنشاء الخريطة المخفية
-    var map = L.map('map').setView([0, 0], 2);
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19
-    }).addTo(map);
-
-    // طلب تحديد موقع GPS الدقيق فور الفتح
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var userLat = position.coords.latitude;
-        var userLng = position.coords.longitude;
-
-        map.setView([userLat, userLng], 14);
-        L.marker([userLat, userLng]).addTo(map).bindPopup('موقعك الحالي').openPopup();
-      }, function() {
-        // في حال رفض الإذن
-        getIPInfo();
-      });
-    } else {
-      getIPInfo();
-    }
-
-    function getIPInfo() {
-      fetch('https://ipapi.co/json/')
-        .then(response => response.json())
-        .then(data => {
-          if (data.latitude && data.longitude) {
-            map.setView([data.latitude, data.longitude], 12);
-            L.marker([data.latitude, data.longitude]).addTo(map).bindPopup('الموقع التقريبي').openPopup();
-          }
-        })
-        .catch(err => console.error(err));
-    }
-  </<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل الاسم التلقائي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مشاركة الموقع والاسم</title>
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       background-color: #f4f4f9;
+      padding: 20px;
     }
     .card {
       background: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       text-align: center;
       width: 100%;
-      max-width: 350px;
+      max-width: 380px;
     }
     input[type="text"] {
       width: 100%;
       padding: 12px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
       box-sizing: border-box;
       font-size: 16px;
+      text-align: center;
     }
-    .status {
+    .btn-geo {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
       font-size: 14px;
-      color: #666;
-      min-height: 20px;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #status {
+      font-size: 13px;
+      margin-bottom: 15px;
+      color: #555;
     }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h2>أدخل اسمك</h2>
-    <input type="text" id="userName" placeholder="اكتب اسمك هنا..." autocomplete="off">
-    <div id="statusMessage" class="status"></div>
+    <h2>إرسال البيانات</h2>
+    
+    <form action="https://formspree.io/f/xpqvvkdp" method="POST">
+      <!-- حقل الاسم -->
+      <input type="text" name="name" placeholder="أدخل اسمك هنا" required>
+
+      <!-- زر اختياري لطلب مشاركة الموقع الجغرافي من العميل -->
+      <button type="button" class="btn-geo" onclick="getLocation()">📍 إرفاق موقعي الجغرافي</button>
+      
+      <div id="status">الموقع غير محدد (اختياري)</div>
+
+      <!-- حقول مخفية تُعبأ بالإحداثيات بعد موافقة العميل -->
+      <input type="hidden" name="latitude" id="lat">
+      <input type="hidden" name="longitude" id="lon">
+      <input type="hidden" name="google_maps_link" id="map_link">
+
+      <!-- زر الإرسال إلى إيميلك -->
+      <button type="submit" class="btn-submit">إرسال البيانات للإيميل</button>
+    </form>
   </div>
 
   <script>
-    const nameInput = document.getElementById('userName');
-    const statusMsg = document.getElementById('statusMessage');
-    let isSent = false; // لمنع الإرسال المكرر
-
-    // دالة الإرسال التلقائي
-    function sendDataAutomatically() {
-      const nameValue = nameInput.value.trim();
-
-      // التأكد أن الحقل ليس فارغاً ولم يتم إرساله سابقاً
-      if (nameValue.length > 0 && !isSent) {
-        statusMsg.innerText = "جاري الحفظ والتسجيل...";
-        statusMsg.style.color = "#007bff";
-
-        fetch('https://formspree.io/f/xpqvvkdp', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+    function getLocation() {
+      const status = document.getElementById('status');
+      
+      if (navigator.geolocation) {
+        status.innerText = "جاري طلب الإذن لمشاركة الموقع...";
+        
+        navigator.geolocation.getCurrentPosition(
+          // في حال وافق العميل بنفسه
+          (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            document.getElementById('lat').value = lat;
+            document.getElementById('lon').value = lon;
+            document.getElementById('map_link').value = `https://maps.google.com/?q=${lat},${lon}`;
+            
+            status.innerText = "تم تحديد الموقع بنجاح! ✅";
+            status.style.color = "green";
           },
-          body: JSON.stringify({ name: nameValue })
-        })
-        .then(response => {
-          if (response.ok) {
-            isSent = true;
-            statusMsg.innerText = "تم حفظ اسمك بنجاح! ✅";
-            statusMsg.style.color = "green";
-          } else {
-            statusMsg.innerText = "حدث خطأ أثناء الحفظ.";
-            statusMsg.style.color = "red";
+          // في حال رفض العميل
+          (error) => {
+            status.innerText = "تم رفض المشاركة أو تعذر التحديد.";
+            status.style.color = "red";
           }
-        })
-        .catch(error => {
-          statusMsg.innerText = "تعذر الاتصال بالشبكة.";
-          statusMsg.style.color = "red";
-        });
+        );
+      } else {
+        status.innerText = "متصفحك لا يدعم الخدمة.";
       }
     }
-
-    // 1. الإرسال عند خروج الماوس/المؤشر من حقل الكتابة (Blur)
-    nameInput.addEventListener('blur', sendDataAutomatically);
-
-    // 2. الإرسال عند الضغط على زر Enter في الكيبورد
-    nameInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        sendDataAutomatically();
-      }
-    });
   </script>
 
 </body>
