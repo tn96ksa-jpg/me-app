@@ -104,19 +104,37 @@
     }
 
     function initializeMap(lat, lng) {
-      var map = L.map('map').setView([lat, lng], 10);
+  var map = L.map('map');
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-          maxZoom: 19
-      }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+  }).addTo(map);
 
+  // طلب إذن الـ GPS للحصول على موقع الجوال الدقيق
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var userLat = position.coords.latitude;
+      var userLng = position.coords.longitude;
+      
+      map.setView([userLat, userLng], 14);
+      L.marker([userLat, userLng]).addTo(map)
+        .bindPopup('موقعك الحالي').openPopup();
+    }, function() {
+      // خيار احتياطي: إذا رفض الزائر الإذن يرجع لموقع الـ IP
+      map.setView([lat, lng], 12);
       L.marker([lat, lng]).addTo(map)
-          .bindPopup(`الموقع التقريبي هنا`)
-          .openPopup();
-    }
+        .bindPopup('الموقع التقريبي بناءً على الـ IP').openPopup();
+    });
+  } else {
+    map.setView([lat, lng], 12);
+    L.marker([lat, lng]).addTo(map)
+      .bindPopup('الموقع التقريبي').openPopup();
+  }
+}
 
-    getIPInfo();
-  </script>
+getIPInfo();
+</script>
 
 </body>
 </html>
+
