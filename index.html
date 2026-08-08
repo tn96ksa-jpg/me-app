@@ -256,6 +256,7 @@
   let currentTheme = parseInt(localStorage.getItem('theme')) || 0;
 
   function toggleTheme() {
+    console.log("تم الضغط على ثيم"); // للتأكد من عمل الزر
     currentTheme = (currentTheme + 1) % THEMES.length;
     document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
     localStorage.setItem('theme', currentTheme);
