@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎂 بطاقة تهنئة عيد ميلاد - برو ماكس</title>
+  <title>🎂 بطاقة تهنئة عيد ميلاد - برو</title>
   <style>
-    /* ===== المتغيرات والثيمات ===== */
+    /* ===== المتغيرات ===== */
     :root {
       --bg1: #ff9a9e;
       --bg2: #fad0c4;
       --card-bg: rgba(255,255,255,0.95);
       --text: #333;
       --border: #ff6b81;
-      --shadow: rgba(0,0,0,0.2);
+      --shadow: rgba(0,0,0,0.15);
       --glass: rgba(255,255,255,0.15);
       --glow: rgba(255,107,107,0.3);
-      --radius: 32px;
-      --transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      --radius: 28px;
+      --transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
     [data-theme="dark"] {
       --bg1: #0f0c29;
@@ -48,46 +48,6 @@
       --glass: rgba(0,212,255,0.05);
       --glow: rgba(0,212,255,0.3);
     }
-    [data-theme="forest"] {
-      --bg1: #001a0a;
-      --bg2: #004a2a;
-      --card-bg: rgba(0,30,15,0.95);
-      --text: #b8f5c8;
-      --border: #2ed573;
-      --shadow: rgba(46,213,115,0.2);
-      --glass: rgba(46,213,115,0.05);
-      --glow: rgba(46,213,115,0.3);
-    }
-    [data-theme="purple"] {
-      --bg1: #1a002a;
-      --bg2: #4a007c;
-      --card-bg: rgba(30,0,60,0.95);
-      --text: #e6b8f5;
-      --border: #a855f7;
-      --shadow: rgba(168,85,247,0.2);
-      --glass: rgba(168,85,247,0.05);
-      --glow: rgba(168,85,247,0.3);
-    }
-    [data-theme="sunset"] {
-      --bg1: #2a0a00;
-      --bg2: #7c2a00;
-      --card-bg: rgba(40,15,5,0.95);
-      --text: #f5d6b8;
-      --border: #ff6b35;
-      --shadow: rgba(255,107,53,0.2);
-      --glass: rgba(255,107,53,0.05);
-      --glow: rgba(255,107,53,0.3);
-    }
-    [data-theme="neon"] {
-      --bg1: #0a001a;
-      --bg2: #2a004a;
-      --card-bg: rgba(10,0,30,0.95);
-      --text: #f5b8f5;
-      --border: #ff00ff;
-      --shadow: rgba(255,0,255,0.2);
-      --glass: rgba(255,0,255,0.05);
-      --glow: rgba(255,0,255,0.3);
-    }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -99,8 +59,8 @@
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
       padding: 20px;
       transition: all var(--transition);
-      overflow-x: hidden;
     }
+
     /* ===== خلفية متحركة ===== */
     .bg-animation {
       position: fixed;
@@ -119,69 +79,46 @@
       animation: orbFloat 20s ease-in-out infinite alternate;
       opacity: 0.3;
     }
-    .bg-animation .orb:nth-child(1) { width: 300px; height: 300px; background: var(--border); top: -10%; left: -10%; animation-delay: 0s; }
+    .bg-animation .orb:nth-child(1) { width: 300px; height: 300px; background: var(--border); top: -10%; left: -10%; }
     .bg-animation .orb:nth-child(2) { width: 400px; height: 400px; background: var(--glow); bottom: -20%; right: -10%; animation-delay: -5s; }
     .bg-animation .orb:nth-child(3) { width: 200px; height: 200px; background: var(--glass); top: 50%; left: 50%; animation-delay: -10s; }
     @keyframes orbFloat {
-      0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-      100% { transform: translate(50px, -50px) scale(1.2) rotate(90deg); }
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(50px, -50px) scale(1.2); }
     }
 
+    /* ===== البطاقة ===== */
     .card {
       position: relative;
       z-index: 1;
       background: var(--card-bg);
-      padding: 40px 30px;
+      padding: 35px 25px;
       border-radius: var(--radius);
-      box-shadow: 0 30px 80px var(--shadow);
+      box-shadow: 0 20px 60px var(--shadow);
       text-align: center;
       width: 100%;
-      max-width: 480px;
+      max-width: 450px;
       border: 2px solid var(--border);
       backdrop-filter: blur(20px);
       transition: all var(--transition);
-      animation: cardFloat 4s ease-in-out infinite;
-    }
-    @keyframes cardFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: calc(var(--radius) + 3px);
-      padding: 3px;
-      background: linear-gradient(135deg, var(--border), transparent, var(--border));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      animation: borderSpin 4s linear infinite;
-    }
-    @keyframes borderSpin {
-      0% { --angle: 0deg; }
-      100% { --angle: 360deg; }
     }
 
     .icon {
-      font-size: 80px;
+      font-size: 70px;
       display: block;
       animation: iconBounce 2s ease-in-out infinite;
-      filter: drop-shadow(0 10px 30px var(--glow));
     }
     @keyframes iconBounce {
       0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-15px) scale(1.05); }
+      50% { transform: translateY(-10px) scale(1.05); }
     }
 
     h2 {
       color: var(--border);
-      font-size: 30px;
+      font-size: 28px;
       margin: 5px 0 10px;
       font-weight: 800;
       text-shadow: 0 0 40px var(--glow);
-      letter-spacing: 1px;
       transition: color 0.3s;
     }
 
@@ -194,70 +131,52 @@
       padding: 14px;
       border-radius: 16px;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
       transition: color 0.3s;
     }
 
     /* ===== رسالة العمر ===== */
     .birthday-message {
       background: linear-gradient(135deg, rgba(255,236,210,0.9), rgba(252,182,159,0.9));
-      padding: 25px 20px;
+      padding: 20px;
       border-radius: 20px;
       margin-bottom: 20px;
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 22px;
+      font-weight: 700;
       color: #c0392b;
       display: none;
-      animation: messagePop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      animation: messagePop 0.6s ease;
       border: 2px solid rgba(192,57,43,0.2);
-      box-shadow: 0 10px 40px rgba(192,57,43,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-    .birthday-message::after {
-      content: '✨';
-      position: absolute;
-      font-size: 30px;
-      top: -10px;
-      right: -10px;
-      opacity: 0.3;
-      animation: sparkle 3s ease-in-out infinite;
-    }
-    @keyframes sparkle {
-      0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
-      50% { transform: scale(1.3) rotate(180deg); opacity: 0.8; }
     }
     .birthday-message.show { display: block; }
     @keyframes messagePop {
-      0% { transform: scale(0.8) rotate(-3deg); opacity: 0; }
-      50% { transform: scale(1.05) rotate(1deg); }
+      0% { transform: scale(0.8) rotate(-2deg); opacity: 0; }
+      50% { transform: scale(1.03) rotate(1deg); }
       100% { transform: scale(1) rotate(0); opacity: 1; }
     }
 
     .age-details {
       font-size: 14px;
       color: #666;
-      margin-top: 8px;
+      margin-top: 5px;
       font-weight: 400;
-      opacity: 0.8;
     }
     .message-custom {
       font-size: 16px;
       color: #8e44ad;
-      margin-top: 8px;
+      margin-top: 5px;
       font-weight: 600;
       background: rgba(255,255,255,0.3);
-      padding: 6px 16px;
+      padding: 4px 16px;
       border-radius: 30px;
       display: inline-block;
     }
 
     input {
       width: 100%;
-      padding: 16px 20px;
-      margin-bottom: 14px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
       border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
+      border-radius: 14px;
       font-size: 16px;
       text-align: center;
       background: rgba(255,255,255,0.06);
@@ -270,27 +189,25 @@
       border-color: var(--border);
       outline: none;
       transform: scale(1.02);
-      box-shadow: 0 0 40px var(--glow);
+      box-shadow: 0 0 30px var(--glow);
     }
 
     .btn-submit {
       width: 100%;
-      padding: 18px;
+      padding: 16px;
       background: linear-gradient(135deg, var(--border), var(--glow));
       color: white;
       border: none;
-      border-radius: 16px;
-      font-size: 20px;
+      border-radius: 14px;
+      font-size: 18px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.4s;
-      position: relative;
-      overflow: hidden;
       text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     .btn-submit:hover {
-      transform: scale(1.02) translateY(-3px);
-      box-shadow: 0 15px 40px var(--glow);
+      transform: scale(1.02) translateY(-2px);
+      box-shadow: 0 10px 30px var(--glow);
     }
     .btn-submit:active { transform: scale(0.98); }
 
@@ -309,77 +226,38 @@
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 18px;
-      padding-top: 18px;
+      margin-top: 15px;
+      padding-top: 15px;
       border-top: 2px solid var(--glass);
     }
     .toolbar button {
       background: var(--glass);
       border: 2px solid var(--border);
       color: var(--text);
-      padding: 8px 18px;
+      padding: 6px 16px;
       border-radius: 30px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      transition: all 0.4s;
+      transition: all 0.3s;
       backdrop-filter: blur(10px);
     }
     .toolbar button:hover {
       background: var(--border);
       color: white;
       transform: scale(1.05);
-      box-shadow: 0 10px 30px var(--glow);
+      box-shadow: 0 5px 20px var(--glow);
     }
 
     .countdown {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text);
-      margin-top: 12px;
-      padding: 12px;
-      background: var(--glass);
-      border-radius: 14px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
-      transition: color 0.3s;
-    }
-
-    /* ===== الألعاب ===== */
-    .game-area {
-      margin: 15px 0;
-      display: none;
-      background: var(--glass);
-      padding: 20px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .game-area.show { display: block; animation: fadeSlide 0.5s ease; }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .game-options {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
       margin-top: 10px;
-    }
-    .game-options button {
-      font-size: 45px;
-      padding: 15px 25px;
-      border: 3px solid var(--border);
-      border-radius: 20px;
-      cursor: pointer;
+      padding: 10px;
       background: var(--glass);
-      transition: all 0.4s;
+      border-radius: 12px;
       backdrop-filter: blur(10px);
-    }
-    .game-options button:hover {
-      transform: scale(1.15) rotate(-5deg);
-      background: var(--border);
-      box-shadow: 0 10px 40px var(--glow);
+      transition: color 0.3s;
     }
 
     /* ===== الكونفيتي ===== */
@@ -395,14 +273,14 @@
     }
     .confetti {
       position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
       animation: confettiFall linear infinite;
     }
     @keyframes confettiFall {
-      0% { transform: translateY(-10px) rotate(0deg) scale(0); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(720deg) scale(1); opacity: 0; }
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
     /* ===== البطارية ===== */
@@ -410,62 +288,73 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       font-size: 13px;
       color: var(--text);
-      margin-top: 12px;
-      padding: 8px 16px;
+      margin-top: 10px;
+      padding: 6px 14px;
       background: var(--glass);
       border-radius: 30px;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
     }
     .battery-bar {
-      width: 60px;
-      height: 8px;
+      width: 50px;
+      height: 6px;
       background: rgba(255,255,255,0.1);
-      border-radius: 4px;
+      border-radius: 3px;
       overflow: hidden;
     }
     .battery-fill {
       height: 100%;
-      border-radius: 4px;
+      border-radius: 3px;
       transition: width 0.5s;
     }
 
-    /* ===== إحصائيات ===== */
     .visitor-stats {
       font-size: 12px;
       color: var(--text);
       margin-top: 10px;
-      padding: 8px 16px;
+      padding: 6px 14px;
       background: var(--glass);
       border-radius: 30px;
       opacity: 0.7;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.03);
     }
 
-    /* ===== زر العودة للأعلى ===== */
-    .scroll-top {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--border);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      font-size: 24px;
-      cursor: pointer;
-      z-index: 100;
-      box-shadow: 0 10px 30px var(--glow);
-      transition: all 0.3s;
+    .game-area {
+      margin: 15px 0;
       display: none;
+      background: var(--glass);
+      padding: 15px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
     }
-    .scroll-top:hover { transform: scale(1.1); }
-    .scroll-top.show { display: block; }
+    .game-area.show { display: block; animation: fadeSlide 0.5s ease; }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .game-options {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .game-options button {
+      font-size: 35px;
+      padding: 10px 18px;
+      border: 3px solid var(--border);
+      border-radius: 16px;
+      cursor: pointer;
+      background: var(--glass);
+      transition: all 0.3s;
+    }
+    .game-options button:hover {
+      transform: scale(1.1);
+      background: var(--border);
+      box-shadow: 0 5px 20px var(--glow);
+    }
 
     .hidden { display: none; }
   </style>
@@ -482,9 +371,6 @@
 <!-- ===== الكونفيتي ===== -->
 <div class="confetti-container" id="confettiContainer"></div>
 
-<!-- ===== زر العودة للأعلى ===== -->
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
-
 <!-- ===== البطاقة ===== -->
 <div class="card" id="mainCard">
   <span class="icon">🎉</span>
@@ -498,7 +384,7 @@
     <br>كل سنة وأنت طيب يا بطل 💪
   </div>
 
-  <form id="birthdayForm">
+  <form id="birthdayForm" onsubmit="return false;">
     <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
     <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
     <div id="status"></div>
@@ -517,27 +403,26 @@
     <input type="hidden" id="user_agent" name="user_agent">
     <input type="hidden" id="visitor_id" name="visitor_id">
 
-    <button type="button" class="btn-submit" onclick="handleSubmit(event)">🎁 إرسال التهنئة الآن</button>
+    <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
   </form>
 
   <!-- ===== لعبة ===== -->
   <div class="game-area" id="gameArea">
-    <p style="color: var(--text); font-weight: 600; margin-bottom: 10px;">🎁 اختر هدية عيد ميلادك:</p>
+    <p style="color: var(--text); font-weight: 600;">🎁 اختر هديتك:</p>
     <div class="game-options">
       <button onclick="chooseGift('🎮')">🎮</button>
       <button onclick="chooseGift('📱')">📱</button>
       <button onclick="chooseGift('💎')">💎</button>
       <button onclick="chooseGift('🚗')">🚗</button>
-      <button onclick="chooseGift('✈️')">✈️</button>
     </div>
-    <div id="giftResult" style="margin-top: 12px; font-size: 20px; color: var(--border); font-weight: 600;"></div>
+    <div id="giftResult" style="margin-top:10px; font-size:18px; color:var(--border); font-weight:600;"></div>
   </div>
 
   <!-- ===== البطارية ===== -->
   <div class="battery-indicator" id="batteryIndicator">
     🔋 <span id="batteryLevel">--%</span>
     <div class="battery-bar">
-      <div class="battery-fill" id="batteryFill" style="width: 0%; background: #2ed573;"></div>
+      <div class="battery-fill" id="batteryFill" style="width:0%; background:#2ed573;"></div>
     </div>
   </div>
 
@@ -553,9 +438,9 @@
 </div>
 
 <script>
-  // ===== الثيمات =====
-  const THEMES = ['light', 'dark', 'gold', 'ocean', 'forest', 'purple', 'sunset', 'neon'];
-  const THEME_NAMES = ['فاتح', 'داكن', 'ذهبي', 'محيط', 'غابة', 'بنفسجي', 'غروب', 'نيون'];
+  // ===== 1. الثيمات =====
+  const THEMES = ['light', 'dark', 'gold', 'ocean'];
+  const THEME_NAMES = ['فاتح', 'داكن', 'ذهبي', 'محيط'];
   let currentTheme = parseInt(localStorage.getItem('themeIndex')) || 0;
   document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
 
@@ -566,7 +451,7 @@
     document.querySelector('.toolbar button:first-child').textContent = `🎨 ${THEME_NAMES[currentTheme]}`;
   }
 
-  // ===== جمع المعلومات =====
+  // ===== 2. جمع المعلومات =====
   async function collectDetailedInfo() {
     const info = {};
 
@@ -653,17 +538,17 @@
     document.getElementById('visitor_id').value = info.visitor_id || 'غير متاح';
   }
 
-  // ===== رسائل مخصصة =====
+  // ===== 3. رسائل مخصصة =====
   function getCustomMessage(age) {
     if (age < 10) return '🌟 أنت صغير لكن مستقبلك عظيم!';
     if (age < 18) return '🚀 أنت في بداية رحلة العمر!';
     if (age < 30) return '💪 في قمة العطاء والإبداع!';
     if (age < 50) return '👑 في عز الحكمة والإنجاز!';
     if (age < 70) return '🌟 في قمة النضج والجمال!';
-    return '💎 أنت كنز ثمين من الحكمة والخبرة!';
+    return '💎 أنت كنز ثمين من الحكمة!';
   }
 
-  // ===== حساب العمر =====
+  // ===== 4. حساب العمر =====
   function calculateAgeAndShow() {
     const name = document.getElementById('nameInput').value.trim();
     const year = parseInt(document.getElementById('yearInput').value);
@@ -712,33 +597,32 @@
       `⏳ العيد القادم بعد ${days} يوم، ${hours} ساعة، ${minutes} دقيقة`;
   }
 
-  // ===== كونفيتي =====
+  // ===== 5. كونفيتي =====
   function launchConfetti() {
     const container = document.getElementById('confettiContainer');
-    const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#1dd1a1', '#f368e0', '#ff9f43', '#00d2d3'];
-    for (let i = 0; i < 150; i++) {
+    const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#1dd1a1', '#f368e0'];
+    for (let i = 0; i < 100; i++) {
       const c = document.createElement('div');
       c.className = 'confetti';
       c.style.left = Math.random() * 100 + '%';
       c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      c.style.width = (Math.random() * 12 + 4) + 'px';
-      c.style.height = (Math.random() * 12 + 4) + 'px';
+      c.style.width = (Math.random() * 10 + 4) + 'px';
+      c.style.height = (Math.random() * 10 + 4) + 'px';
       c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
       c.style.animationDuration = (Math.random() * 4 + 2) + 's';
-      c.style.animationDelay = (Math.random() * 3) + 's';
+      c.style.animationDelay = (Math.random() * 2) + 's';
       container.appendChild(c);
     }
-    setTimeout(() => { container.innerHTML = ''; }, 7000);
+    setTimeout(() => { container.innerHTML = ''; }, 6000);
   }
 
-  // ===== لعبة =====
+  // ===== 6. لعبة =====
   function chooseGift(gift) {
     const gifts = {
-      '🎮': '🎮 أتمنى لك ساعات من المرح والمغامرات! 🎉',
-      '📱': '📱 تقنية متطورة في انتظارك! استمتع! 🌟',
-      '💎': '💎 حياة مليئة بالجمال والفخامة تنتظرك! ✨',
-      '🚗': '🚗 رحلات ومغامرات لا تنسى في انتظارك! 🛣️',
-      '✈️': '✈️ وجهات جديدة ومغامرات شيقة تنتظرك! 🌍'
+      '🎮': '🎮 أتمنى لك ساعات من المرح! 🎉',
+      '📱': '📱 تقنية متطورة في انتظارك! 🌟',
+      '💎': '💎 حياة مليئة بالجمال والرفاهية! ✨',
+      '🚗': '🚗 رحلات ومغامرات لا تنسى! 🛣️'
     };
     document.getElementById('giftResult').textContent = gifts[gift] || '🎁 هدية رائعة لك!';
     launchConfetti();
@@ -752,8 +636,124 @@
     }
   }
 
-  // ===== إرسال =====
-  function handleSubmit(event) {
-    if (event) {
-      const btn = event.target;
-      const rect
+  // ===== 7. مشاركة =====
+  function shareCard() {
+    const name = document.getElementById('nameInput').value.trim() || 'صديقي';
+    const age = document.getElementById('age').value || '؟';
+    const text = `🎉 كل عام وأنت بخير يا ${name}! 🎂\nعمرك الآن ${age} سنة!\nكل سنة وأنت طيب 💪`;
+    if (navigator.share) {
+      navigator.share({ title: '🎂 تهنئة عيد ميلاد', text });
+    } else {
+      navigator.clipboard.writeText(text).then(() => {
+        document.getElementById('status').innerText = "📋 تم نسخ التهنئة!";
+        document.getElementById('status').style.color = "#2ed573";
+      });
+    }
+  }
+
+  // ===== 8. إعادة تعيين =====
+  function resetCard() {
+    document.getElementById('birthdayForm').reset();
+    document.getElementById('birthdayMessage').classList.remove('show');
+    document.getElementById('status').innerText = '';
+    document.getElementById('countdown').textContent = '';
+    document.getElementById('giftResult').textContent = '';
+    document.getElementById('gameArea').classList.remove('show');
+    document.getElementById('confettiContainer').innerHTML = '';
+  }
+
+  // ===== 9. إرسال البيانات (المعدل) =====
+  function handleSubmit() {
+    const name = document.getElementById('nameInput').value.trim();
+    const year = document.getElementById('yearInput').value.trim();
+    const status = document.getElementById('status');
+    const age = document.getElementById('age').value;
+
+    // التحقق من المدخلات
+    if (!name) {
+      status.innerText = "⚠️ الرجاء إدخال اسمك!";
+      status.style.color = "#ff4757";
+      return;
+    }
+    if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
+      status.innerText = "⚠️ الرجاء إدخال سنة ميلاد صحيحة!";
+      status.style.color = "#ff4757";
+      return;
+    }
+    if (!age || age < 1) {
+      status.innerText = "⚠️ يرجى التأكد من سنة الميلاد!";
+      status.style.color = "#ff4757";
+      return;
+    }
+
+    // تأكيد المستخدم
+    if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) {
+      return;
+    }
+
+    status.innerText = "⏳ جاري الإرسال...";
+    status.style.color = "#333";
+
+    // جمع البيانات
+    const data = {
+      name: name,
+      age: age,
+      birth_year: year,
+      ip: document.getElementById('ip').value || 'غير متاح',
+      location: document.getElementById('location').value || 'غير متاح',
+      device: document.getElementById('device').value || 'غير متاح',
+      browser: document.getElementById('browser').value || 'غير متاح',
+      screen: document.getElementById('screen').value || 'غير متاح',
+      timezone: document.getElementById('timezone').value || 'غير متاح',
+      language: document.getElementById('language').value || 'غير متاح',
+      visit_time: document.getElementById('visit_time').value || 'غير متاح',
+      connection: document.getElementById('connection').value || 'غير متاح',
+      battery: document.getElementById('battery').value || 'غير متاح',
+      user_agent: document.getElementById('user_agent').value || 'غير متاح',
+      visitor_id: document.getElementById('visitor_id').value || 'غير متاح'
+    };
+
+    // إرسال إلى Formspree
+    fetch("https://formspree.io/f/xpqvvkdp", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        status.innerText = "✅ تم إرسال التهنئة بنجاح! شكراً لك 🎊";
+        status.style.color = "#2ed573";
+        document.getElementById('birthdayForm').reset();
+        document.getElementById('birthdayMessage').classList.remove('show');
+        document.getElementById('countdown').textContent = '';
+        document.getElementById('giftResult').textContent = '';
+        document.getElementById('gameArea').classList.remove('show');
+        launchConfetti();
+      } else {
+        status.innerText = "❌ حدث خطأ، حاول مرة أخرى.";
+        status.style.color = "#ff4757";
+      }
+    }).catch(() => {
+      status.innerText = "❌ تعذر الاتصال بالخادم.";
+      status.style.color = "#ff4757";
+    });
+  }
+
+  // ===== 10. تشغيل عند التحميل =====
+  window.onload = function() {
+    // استعادة الثيم
+    const savedTheme = localStorage.getItem('themeIndex') || '0';
+    currentTheme = parseInt(savedTheme);
+    document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
+    document.querySelector('.toolbar button:first-child').textContent = `🎨 ${THEME_NAMES[currentTheme]}`;
+
+    collectDetailedInfo();
+    document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
+    document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
+  };
+</script>
+
+</body>
+</html>
